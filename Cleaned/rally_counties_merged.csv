@@ -1,0 +1,398 @@
+date,placename,state,state_fips,countyname,countyfips,venue,attendance
+17jun2015,Manchester,New Hampshire,33,Hillsborough,11,Manchester Community College,300
+11jul2015,Phoenix,Arizona,4,Maricopa,13,Phoenix Convention Center,4169
+21jul2015,Sun City,South Carolina,45,Beaufort,13,Magnolia Hall,500
+25jul2015,Oskaloosa,Iowa,19,Mahaska,123,Oskaloosa High School,1000
+14aug2015,Hampton,New Hampshire,33,Rockingham,15,Winnacunnet High School,3000
+21aug2015,Mobile,Alabama,1,Mobile,97,Ladd–Peebles Stadium,22500
+25aug2015,Dubuque,Iowa,19,Dubuque,61,Grand River Center,3000
+27aug2015,Greenville,South Carolina,45,Greenville,45,TD Convention Center,1400
+28aug2015,Norwood,Massachusetts,25,Norfolk,21,"Home of Ernie Boch, Jr.",1750
+14sep2015,Dallas,Texas,48,Dallas,113,American Airlines Center,15000
+15sep2015,Los Angeles,California,6,Los Angeles,37,USS Iowa,1000
+25sep2015,Oklahoma City,Oklahoma,40,Oklahoma,109,Oklahoma State Fair,15000
+30sep2015,Keene,New Hampshire,33,Cheshire,5,Keene High School,3500
+03oct2015,Franklin,Tennessee,47,Williamson,187,Dortch Stove Works,
+07oct2015,Waterloo,Iowa,19,Black Hawk,13,Electric Park Ballroom,1100
+10oct2015,Norcross,Georgia,13,Gwinnett,135,North Atlanta Trade Center,7700
+16oct2015,Tyngsborough,Massachusetts,25,Middlesex,17,Tyngsboro Elementary School,1000
+19oct2015,Anderson,South Carolina,45,Anderson,7,Civic Center of Anderson,5000
+24oct2015,Jacksonville,Florida,12,Duval,31,Jacksonville Landing,20000
+27oct2015,Sioux City,Iowa,19,Woodbury,193,West High School,2200
+29oct2015,Sparks,Nevada,32,Washoe,31,Nugget Casino Resort,2000
+31oct2015,Norfolk,Virginia,51,Norfolk city,710,USS Wisconsin,2000
+09nov2015,Springfield,Illinois,17,Sangamon,167,Prairie Capital Convention Center,10200
+12nov2015,Fort Dodge,Iowa,19,Webster,187,Iowa Central Community College,1500
+14nov2015,Beaumont,Texas,48,Jefferson,245,Ford Arena,
+16nov2015,Knoxville,Tennessee,47,Knox,93,Knoxville Convention Center,5000
+18nov2015,Worcester,Massachusetts,25,Worcester,27,DCU Center,10500
+19nov2015,Newton,Iowa,19,Jasper,99,"Maytag Auditorium, DMACC Newton Campus",400
+21nov2015,Birmingham,Alabama,1,Jefferson,73,Birmingham–Jefferson Convention Complex,3000
+23nov2015,Columbus,Ohio,39,Franklin,49,Greater Columbus Convention Center,14000
+24nov2015,Myrtle Beach,South Carolina,45,Horry,51,Myrtle Beach Convention Center,8000
+28nov2015,Sarasota,Florida,12,Sarasota,115,Robarts Arena,9000
+30nov2015,Macon,Georgia,13,Bibb,21,Macon Coliseum,6000
+01dec2015,Waterville Valley,New Hampshire,33,Grafton,9,White Mountain Athletic Club,900
+02dec2015,Manassas,Virginia,51,Manassas city,683,Prince William County Fairgrounds,
+04dec2015,Raleigh,North Carolina,37,Wake,183,Dorton Arena,8000
+05dec2015,Davenport,Iowa,19,Scott,163,Mississippi Valley Fairgrounds,1700
+05dec2015,Spencer,Iowa,19,Clay,41,Clay County Regional Events Center,1300
+07dec2015,Mount Pleasant,South Carolina,45,Charleston,19,USS Yorktown,
+11dec2015,Des Moines,Iowa,19,Polk,153,"Varied Industries Building, Iowa State Fairgrounds",2500
+12dec2015,Aiken,South Carolina,45,Aiken,3,USC Aiken Convocation Center,
+14dec2015,Las Vegas,Nevada,32,Clark,3,Westgate Las Vegas Resort & Casino,
+16dec2015,Mesa,Arizona,4,Maricopa,13,Phoenix–Mesa Gateway Airport,3100
+19dec2015,Cedar Rapids,Iowa,19,Linn,113,Veterans Memorial Coliseum,1200
+21dec2015,Grand Rapids,Michigan,26,Kent,81,DeltaPlex Arena,7000
+28dec2015,Nashua,New Hampshire,33,Hillsborough,11,Pennichuck Middle School,1000
+29dec2015,Council Bluffs,Iowa,19,Pottawattamie,155,Mid-America Center,
+30dec2015,Hilton Head Island,South Carolina,45,Beaufort,13,The Westin Hilton Head Island Resort & Spa,2500
+02jan2016,Biloxi,Mississippi,28,Harrison,47,Mississippi Coast Coliseum,15000
+04jan2016,Lowell,Massachusetts,25,Middlesex,17,Tsongas Center,
+05jan2016,Claremont,New Hampshire,33,Sullivan,19,Stevens High School,1200
+07jan2016,Burlington,Vermont,50,Chittenden,7,Flynn Center for the Performing Arts,1400
+08jan2016,Rock Hill,South Carolina,45,York,91,Winthrop Coliseum,6500
+09jan2016,Ottumwa,Iowa,19,Wapello,179,Bridgeview Center,
+09jan2016,Clear Lake,Iowa,19,Cerro Gordo,33,Surf Ballroom,1700
+10jan2016,Reno,Nevada,32,Washoe,31,Reno Events Center,4000
+11jan2016,Windham,New Hampshire,33,Rockingham,15,Castleton Banquet and Conference Center,600
+12jan2016,Cedar Falls,Iowa,19,Black Hawk,13,"West Gymnasium, University of Northern Iowa",2000
+13jan2016,Pensacola,Florida,12,Escambia,33,Pensacola Bay Center,10000
+15jan2016,Urbandale,Iowa,19,Polk,153,Living History Farms Visitor Center,100
+18jan2016,Lynchburg,Virginia,51,Lynchburg city,680,"Vines Center, Liberty University",10000
+18jan2016,Concord,New Hampshire,33,Merrimack,13,Concord High School,700
+19jan2016,Ames,Iowa,19,Story,169,"Hansen Agriculture Student Learning Center, Iowa State University",2000
+20jan2016,Norwalk,Iowa,19,Warren,181,The Wright Place,300
+20jan2016,Tulsa,Oklahoma,40,Tulsa,143,"Mabee Center, Oral Roberts University",9000
+21jan2016,Las Vegas,Nevada,32,Clark,3,"South Point Hotel, Casino & Spa",3000
+23jan2016,Sioux Center,Iowa,19,Sioux,167,"B. J. Haan Auditorium, Dordt College",2600
+23jan2016,Pella,Iowa,19,Marion,125,"Douwstra Auditorium, Central College",400
+24jan2016,Muscatine,Iowa,19,Muscatine,139,Muscatine High School,1000
+25jan2016,Farmington,New Hampshire,33,Strafford,17,Farmington Senior High School,1000
+26jan2016,Iowa City,Iowa,19,Johnson,103,"Iowa Field House, University of Iowa",2000
+26jan2016,Marshalltown,Iowa,19,Marshall,127,"Roundhouse Gymnasium, Marshalltown High School",2100
+27jan2016,Gilbert,South Carolina,45,Lexington,63,The Barn at Harmon's,400
+28jan2016,Des Moines,Iowa,19,Polk,153,"Sheslow Auditorium, Drake University",700
+29jan2016,Nashua,New Hampshire,33,Hillsborough,11,Radisson Hotel Nashua,850
+30jan2016,Clinton,Iowa,19,Clinton,45,Clinton Middle School,1000
+30jan2016,Davenport,Iowa,19,Scott,163,Adler Theatre,2400
+30jan2016,Dubuque,Iowa,19,Dubuque,61,Dubuque Regional Airport,1200
+31jan2016,Council Bluffs,Iowa,19,Pottawattamie,155,Gerald W. Kirn Middle School,2000
+01feb2016,Cedar Rapids,Iowa,19,Linn,113,DoubleTree Hotel Cedar Rapids Convention Complex,1500
+01feb2016,Waterloo,Iowa,19,Black Hawk,13,Ramada Waterloo Hotel and Convention Center,300
+02feb2016,Milford,New Hampshire,33,Hillsborough,11,Hampshire Hills Athletic Club,
+03feb2016,Little Rock,Arkansas,5,Pulaski,119,Barton Coliseum,11500
+04feb2016,Exeter,New Hampshire,33,Rockingham,15,Exeter Town Hall,
+04feb2016,Portsmouth,New Hampshire,33,Rockingham,15,Great Bay Community College,500
+05feb2016,Florence,South Carolina,45,Florence,41,Florence Civic Center,
+07feb2016,Holderness,New Hampshire,33,Grafton,9,"ALLWell North, Plymouth State University",2500
+08feb2016,Londonderry,New Hampshire,33,Rockingham,15,Londonderry Lions Club,200
+08feb2016,Manchester,New Hampshire,33,Hillsborough,11,Verizon Wireless Arena,5000
+08feb2016,Salem,New Hampshire,33,Rockingham,15,Derry-Salem Elks Lodge,200
+10feb2016,Pendleton,South Carolina,45,Anderson,7,"T. Ed Garrison Arena, Clemson University",5000
+11feb2016,Baton Rouge,Louisiana,22,East Baton Rouge Parish,33,Baton Rouge River Center,10000
+12feb2016,Tampa,Florida,12,Hillsborough,57,"USF Sun Dome, University of South Florida",10000
+15feb2016,Greenville,South Carolina,45,Greenville,45,TD Convention Center,
+16feb2016,North Augusta,South Carolina,45,Aiken,3,Riverview Park Activities Center,2000
+16feb2016,Beaufort,South Carolina,45,Beaufort,13,Beaufort High School Performing Arts Center,20000
+17feb2016,Sumter,South Carolina,45,Sumter,85,Sumter County Civic Center,4000
+17feb2016,Walterboro,South Carolina,45,Colleton,29,Randy and Sara White's farm,4000
+18feb2016,Gaffney,South Carolina,45,Cherokee,21,Broad River Electric Cooperative,
+18feb2016,Kiawah Island,South Carolina,45,Charleston,19,"Turtle Point Clubhouse, Kiawah Island Golf Resort",
+19feb2016,Myrtle Beach,South Carolina,45,Horry,51,Myrtle Beach Sports Center,12000
+19feb2016,Pawleys Island,South Carolina,45,Georgetown,43,Pawley's Plantation Golf & Country Club,1000
+19feb2016,North Charleston,South Carolina,45,Charleston,19,North Charleston Convention Center,2000
+21feb2016,Atlanta,Georgia,13,Fulton,121,Georgia World Congress Center,
+22feb2016,Las Vegas,Nevada,32,Clark,3,"South Point Hotel, Casino & Spa",
+23feb2016,Sparks,Nevada,32,Washoe,31,Rose Ballroom,3000
+26feb2016,Oklahoma City,Oklahoma,40,Oklahoma,109,Cox Convention Center,7000
+27feb2016,Highfill,Arkansas,5,Benton,7,Northwest Arkansas Regional Airport,5000
+27feb2016,Millington,Tennessee,47,Shelby,157,Millington Regional Jetport,10000
+27feb2016,Fort Worth,Texas,48,Tarrant,439,Fort Worth Convention Center,8000
+28feb2016,Madison,Alabama,1,Madison,89,Madison City Schools Stadium,
+29feb2016,Radford,Virginia,51,Radford city,750,"Dedmon Center, Radford University",3800
+29feb2016,Valdosta,Georgia,13,Lowndes,185,"The Complex, Valdosta State University",7500
+01mar2016,Columbus,Ohio,39,Franklin,49,Port Columbus International Airport,4000
+01mar2016,Louisville,Kentucky,21,Jefferson,111,Kentucky International Convention Center,5000
+03mar2016,Portland,Maine,23,Cumberland,5,The Westin Portland Harborview Hotel,1100
+04mar2016,New Orleans,Louisiana,22,Orleans Parish,71,Lakefront Airport,4000
+04mar2016,Warren,Michigan,26,Macomb,99,"Sports & Expo Center, Macomb Community College",4000
+04mar2016,Cadillac,Michigan,26,Wexford,165,Wexford County Civic Center,3500
+05mar2016,Wichita,Kansas,20,Sedgwick,173,Century II Performing Arts & Convention Center,
+05mar2016,Orlando,Florida,12,Orange,95,"CFE Arena, University of Central Florida",10000
+07mar2016,Madison,Mississippi,28,Madison,89,Madison Central High School,9000
+07mar2016,Concord,North Carolina,37,Cabarrus,25,Cabarrus Arena & Events Center,3000
+09mar2016,Fayetteville,North Carolina,37,Cumberland,51,Crown Coliseum,11000
+11mar2016,St. Louis,Missouri,29,St. Louis city,510,Peabody Opera House,3100
+12mar2016,Dayton,Ohio,39,Montgomery,113,Dayton International Airport,20000
+12mar2016,Cleveland,Ohio,39,Cuyahoga,35,I-X Center,29000
+12mar2016,Kansas City,Missouri,29,Jackson,95,Midland Theatre,7000
+13mar2016,Bloomington,Illinois,17,McLean,113,"Synergy Flight Center, Central Illinois Regional Airport",3000
+13mar2016,Boca Raton,Florida,12,Palm Beach,99,"Sunset Cove Amphitheater, Sugar Sand Park",6000
+14mar2016,Vienna Center,Ohio,39,Trumbull,155,"Winner Aviation, Youngstown–Warren Regional Airport",2500
+14mar2016,Tampa,Florida,12,Hillsborough,57,Tampa Convention Center,1500
+18mar2016,Salt Lake City,Utah,49,Salt Lake,35,Infinity Event Center,1200
+19mar2016,Tucson,Arizona,4,Pima,19,Tucson Convention Center,5000
+19mar2016,Fountain Hills,Arizona,4,Maricopa,13,Fountain Park,10000
+29mar2016,Janesville,Wisconsin,55,Rock,105,Janesville Conference Center,1000
+30mar2016,Appleton,Wisconsin,55,Outagamie,87,Radisson Paper Valley Hotel,1000
+30mar2016,De Pere,Wisconsin,55,Brown,9,"Byron L. Walter Theatre, St. Norbert College",750
+02apr2016,Eau Claire,Wisconsin,55,Eau Claire,35,Memorial High School,1500
+02apr2016,Racine,Wisconsin,55,Racine,101,Memorial Hall,1200
+02apr2016,Rothschild,Wisconsin,55,Marathon,73,Central Wisconsin Convention & Expo Center,1700
+03apr2016,West Allis,Wisconsin,55,Milwaukee,79,Nathan Hale High School,1000
+04apr2016,Milwaukee,Wisconsin,55,Milwaukee,79,Milwaukee Theatre,
+04apr2016,La Crosse,Wisconsin,55,La Crosse,63,La Crosse Center,1700
+04apr2016,Superior,Wisconsin,55,Douglas,31,Richard I. Bong Airport,1000
+06apr2016,Bethpage,New York,36,Nassau,59,Grumman Studios,10000
+10apr2016,Rochester,New York,36,Monroe,55,"JetSmart Aviation Services, Greater Rochester International Airport",9000
+11apr2016,Albany,New York,36,Albany,1,Times Union Center,10000
+12apr2016,Rome,New York,36,Oneida,65,Griffiss International Airport,5000
+13apr2016,Pittsburgh,Pennsylvania,42,Allegheny,3,David L. Lawrence Convention Center,4500
+15apr2016,Plattsburgh,New York,36,Clinton,19,Crete Civic Center,3000
+15apr2016,Hartford,Connecticut,9,Hartford,3,Connecticut Convention Center,7000
+16apr2016,Watertown,New York,36,Jefferson,45,Watertown International Airport,2000
+16apr2016,Syracuse,New York,36,Onondaga,67,"Nicholas J. Pirro Convention Center, Oncenter",5000
+17apr2016,Poughkeepsie,New York,36,Dutchess,27,Mid-Hudson Civic Center,
+18apr2016,Buffalo,New York,36,Erie,29,First Niagara Center,11400
+20apr2016,Berlin,Maryland,24,Worcester,47,Stephen Decatur High School,3000
+20apr2016,Indianapolis,Indiana,18,Marion,97,"Elements Financial Blue Ribbon Pavilion, Indiana State Fairgrounds",4000
+21apr2016,Harrisburg,Pennsylvania,42,Dauphin,43,Pennsylvania Farm Show Complex & Expo Center,6000
+22apr2016,Harrington,Delaware,10,Kent,1,"Quillen Arena, Delaware State Fairgrounds",8200
+23apr2016,Waterbury,Connecticut,9,New Haven,9,Crosby High School,3000
+23apr2016,Bridgeport,Connecticut,9,Fairfield,1,Klein Memorial Auditorium,1400
+24apr2016,Hagerstown,Maryland,24,Washington,43,"Rider Jet Center, Hagerstown Regional Airport",5000
+25apr2016,Warwick,Rhode Island,44,Kent,3,Crowne Plaza Hotel Providence-Warwick,1000
+25apr2016,Wilkes-Barre,Pennsylvania,42,Luzerne,79,Mohegan Sun Arena at Casey Plaza,10000
+25apr2016,West Chester,Pennsylvania,42,Chester,29,West Chester University,3500
+27apr2016,Indianapolis,Indiana,18,Marion,97,Indiana Farmers Coliseum,5000
+28apr2016,Evansville,Indiana,18,Vanderburgh,163,Old National Events Plaza,12000
+28apr2016,Costa Mesa,California,6,Orange,59,"Pacific Amphitheatre, OC Fair & Event Center",
+01may2016,Terre Haute,Indiana,18,Vigo,167,Indiana Theatre,2100
+01may2016,Fort Wayne,Indiana,18,Allen,3,Allen County War Memorial Coliseum,8000
+02may2016,South Bend,Indiana,18,St. Joseph,141,Century Center,8000
+02may2016,Carmel,Indiana,18,Hamilton,57,The Palladium at the Center for the Performing Arts,1800
+05may2016,Charleston,West Virginia,54,Kanawha,39,Charleston Civic Center,
+06may2016,Eugene,Oregon,41,Lane,39,Lane Events Center,5000
+06may2016,Omaha,Nebraska,31,Douglas,55,"Werner Enterprises Hangar, Eppley Airfield",3500
+07may2016,Spokane,Washington,53,Spokane,63,Spokane Convention Center,10000
+07may2016,Lynden,Washington,53,Whatcom,73,Northwest Washington Fair and Event Center,7500
+24may2016,Albuquerque,New Mexico,35,Bernalillo,1,Albuquerque Convention Center,8000
+25may2016,Anaheim,California,6,Orange,59,Anaheim Convention Center,3000
+26may2016,Billings,Montana,30,Yellowstone,111,Rimrock Auto Arena at MetraPark,7000
+27may2016,San Diego,California,6,San Diego,73,San Diego Convention Center,
+27may2016,Fresno,California,6,Fresno,19,Selland Arena,7000
+01jun2016,Sacramento,California,6,Sacramento,67,"Sacramento Jet Center, Sacramento International Airport",5000
+02jun2016,San Jose,California,6,Santa Clara,85,"South Hall, San Jose Convention Center",
+03jun2016,Redding,California,6,Shasta,89,Redding Municipal Airport,4000
+10jun2016,Richmond,Virginia,51,Richmond city,760,Richmond Coliseum,5000
+11jun2016,Tampa,Florida,12,Hillsborough,57,Tampa Convention Center,4000
+11jun2016,Moon Township,Pennsylvania,42,Allegheny,3,"Atlantic Aviation PIT, Pittsburgh International Airport",1500
+14jun2016,Greensboro,North Carolina,37,Guilford,81,Greensboro Coliseum Complex,6200
+15jun2016,Atlanta,Georgia,13,Fulton,121,Fox Theatre,3500
+16jun2016,Dallas,Texas,48,Dallas,113,Gilley's Club,3600
+17jun2016,The Woodlands,Texas,48,Montgomery,339,The Woodlands Waterway Marriott Hotel & Conference Center,5000
+18jun2016,Phoenix,Arizona,4,Maricopa,13,"Arizona Veterans Memorial Coliseum, Arizona State Fairgrounds",6000
+18jun2016,Las Vegas,Nevada,32,Clark,3,"Mystère Theatre, Treasure Island Hotel and Casino",1600
+28jun2016,St. Clairsville,Ohio,39,Belmont,13,"Health and Physical Education Center, Ohio University Eastern Campus",4000
+29jun2016,Bangor,Maine,23,Penobscot,19,Cross Insurance Center,4000
+05jul2016,Raleigh,North Carolina,37,Wake,183,"Raleigh Memorial Auditorium, Duke Energy Center for the Performing Arts",2300
+06jul2016,Cincinnati,Ohio,39,Hamilton,61,Sharonville Convention Center,7000
+12jul2016,Westfield,Indiana,18,Hamilton,57,"Grand Park Event Center, Grand Park",2000
+25jul2016,Winston-Salem,North Carolina,37,Forsyth,67,"Winston-Salem Fairground Annex, Dixie Classic Fairgrounds",4700
+27jul2016,Scranton,Pennsylvania,42,Lackawanna,69,"Student Union Gymnasium, Lackawanna College",3500
+27jul2016,Toledo,Ohio,39,Lucas,95,Huntington Center,8900
+28jul2016,Davenport,Iowa,19,Scott,163,Adler Theatre,2400
+28jul2016,Cedar Rapids,Iowa,19,Linn,113,DoubleTree Hotel Cedar Rapids Convention Complex,3000
+29jul2016,Denver,Colorado,8,Denver,31,Wings Over the Rockies Air and Space Museum,6000
+29jul2016,Colorado Springs,Colorado,8,El Paso,41,"Gallogly Event Center, University of Colorado Colorado Springs",2500
+01aug2016,Mechanicsburg,Pennsylvania,42,Cumberland,41,Cumberland Valley High School,5000
+01aug2016,Columbus,Ohio,39,Franklin,49,Greater Columbus Convention Center,1000
+02aug2016,Ashburn,Virginia,51,Loudoun,107,Briar Woods High School,800
+03aug2016,Daytona Beach,Florida,12,Volusia,127,Ocean Center,10000
+03aug2016,Jacksonville,Florida,12,Duval,31,Jacksonville Veterans Memorial Arena,10000
+04aug2016,Portland,Maine,23,Cumberland,5,Merrill Auditorium,1600
+05aug2016,Green Bay,Wisconsin,55,Brown,9,KI Convention Center,3000
+05aug2016,Des Moines,Iowa,19,Polk,153,Iowa Events Center,6000
+06aug2016,Windham,New Hampshire,33,Rockingham,15,Windham High School,1500
+09aug2016,Fayetteville,North Carolina,37,Cumberland,51,Crown Arena,3000
+09aug2016,Wilmington,North Carolina,37,New Hanover,129,"Trask Coliseum, University of North Carolina at Wilmington",
+10aug2016,Sunrise,Florida,12,Broward,11,BB&T Center,
+11aug2016,Kissimmee,Florida,12,Osceola,97,Silver Spurs Arena,8000
+12aug2016,Altoona,Pennsylvania,42,Blair,13,Blair County Convention Center,5000
+12aug2016,Erie,Pennsylvania,42,Erie,49,Erie Insurance Arena,8000
+13aug2016,Fairfield,Connecticut,9,Fairfield,1,"William H. Pitt Center, Sacred Heart University",5000
+16aug2016,West Bend,Wisconsin,55,Washington,131,"Ziegler Family Expo Center, Washington County Fair Park & Conference Center",2000
+18aug2016,Charlotte,North Carolina,37,Mecklenburg,119,Charlotte Convention Center,5000
+19aug2016,Dimondale,Michigan,26,Eaton,45,The Summit Sports and Ice Complex,5000
+20aug2016,Fredericksburg,Virginia,51,Fredericksburg city,630,Fredericksburg Expo & Conference Center,3600
+22aug2016,Akron,Ohio,39,Summit,153,"James A. Rhodes Arena, University of Akron",5000
+23aug2016,Austin,Texas,48,Travis,453,Luedecke Arena,7000
+24aug2016,Tampa,Florida,12,Hillsborough,57,"Entertainment Hall, Florida State Fairgrounds",3000
+24aug2016,Jackson,Mississippi,28,Hinds,49,Mississippi Coliseum,
+25aug2016,Manchester,New Hampshire,33,Hillsborough,11,Radisson Hotel Manchester Downtown,900
+30aug2016,Everett,Washington,53,Snohomish,61,Xfinity Arena,
+31aug2016,Phoenix,Arizona,4,Maricopa,13,Phoenix Convention Center,7500
+01sep2016,Wilmington,Ohio,39,Clinton,27,Roberts Centre,5500
+06sep2016,Greenville,North Carolina,37,Pitt,147,Greenville Convention Center,3000
+09sep2016,Pensacola,Florida,12,Escambia,33,Pensacola Bay Center,12500
+12sep2016,Asheville,North Carolina,37,Buncombe,21,U.S. Cellular Center,6000
+13sep2016,Clive,Iowa,19,Polk,153,7 Flags Event Center,1600
+14sep2016,Canton,Ohio,39,Stark,151,Canton Memorial Civic Center,6000
+15sep2016,Laconia,New Hampshire,33,Belknap,1,Laconia Middle School,600
+16sep2016,Miami,Florida,12,Miami-Dade,86,Knight Center Complex,
+17sep2016,Colorado Springs,Colorado,8,El Paso,41,"Colorado Jet Center, Colorado Springs Airport",
+19sep2016,Estero,Florida,12,Lee,71,Germain Arena,8000
+20sep2016,Kenansville,North Carolina,37,Duplin,61,Duplin County Events Center,6000
+20sep2016,High Point,North Carolina,37,Guilford,81,"Millis Athletic Convocation Center, High Point University",2000
+21sep2016,Toledo,Ohio,39,Lucas,95,Stranahan Theater,
+22sep2016,Chester,Pennsylvania,42,Delaware,45,Sun Center Studios,3000
+24sep2016,Roanoke,Virginia,51,Roanoke city,770,Berglund Center,9000
+27sep2016,Melbourne,Florida,12,Brevard,9,Orlando Melbourne International Airport,
+28sep2016,Waukesha,Wisconsin,55,Waukesha,133,Waukesha County Expo Center,1500
+28sep2016,Council Bluffs,Iowa,19,Pottawattamie,155,Mid-America Center,1200
+29sep2016,Bedford,New Hampshire,33,Hillsborough,11,NH Sportsplex,900
+30sep2016,Novi,Michigan,26,Oakland,125,Suburban Collection Showplace,6000
+01oct2016,Manheim,Pennsylvania,42,Lancaster,71,Spooky Nook Sports,6000
+03oct2016,Loveland,Colorado,8,Larimer,69,Budweiser Events Center,8000
+03oct2016,Pueblo,Colorado,8,Pueblo,101,Pueblo Convention Center,2000
+04oct2016,Prescott Valley,Arizona,4,Yavapai,25,Prescott Valley Event Center,7000
+05oct2016,Reno,Nevada,32,Washoe,31,Reno-Sparks Convention Center,
+05oct2016,Henderson,Nevada,32,Clark,3,Henderson Pavilion,7000
+10oct2016,Ambridge,Pennsylvania,42,Beaver,7,Ambridge Area High School,3000
+10oct2016,Wilkes-Barre,Pennsylvania,42,Luzerne,79,Mohegan Sun Arena at Casey Plaza,9000
+11oct2016,Panama City Beach,Florida,12,Bay,5,"Aaron Bessant Amphitheater, Aaron Bessant Park",8500
+12oct2016,Lakeland,Florida,12,Polk,105,Lakeland Linder International Airport,7000
+12oct2016,Ocala,Florida,12,Marion,83,Southeastern Livestock Pavilion,12000
+13oct2016,West Palm Beach,Florida,12,Palm Beach,99,South Florida Fairgrounds Expo Center,6000
+13oct2016,Cincinnati,Ohio,39,Hamilton,61,U.S. Bank Arena,
+14oct2016,Charlotte,North Carolina,37,Mecklenburg,119,Charlotte Convention Center,5000
+14oct2016,Greensboro,North Carolina,37,Guilford,81,White Oak Amphitheatre,4000
+15oct2016,Bangor,Maine,23,Penobscot,19,Cross Insurance Center,4000
+15oct2016,Portsmouth,New Hampshire,33,Rockingham,15,Toyota of Portsmouth,7000
+17oct2016,Green Bay,Wisconsin,55,Brown,9,KI Convention Center,3000
+18oct2016,Colorado Springs,Colorado,8,El Paso,41,Norris-Penrose Event Center,
+18oct2016,Grand Junction,Colorado,8,Mesa,77,"West Star Aviation, Grand Junction Regional Airport",
+20oct2016,Delaware,Ohio,39,Delaware,41,Delaware County Fair,1500
+21oct2016,Fletcher,North Carolina,37,Henderson,89,WNC Agricultural Center,3100
+21oct2016,Newtown Township,Pennsylvania,42,Bucks,17,Newtown Athletic Club Sports Training Center,4000
+21oct2016,Johnstown,Pennsylvania,42,Cambria,21,Cambria County War Memorial Arena,4000
+22oct2016,Cleveland,Ohio,39,Cuyahoga,35,I-X Center,
+22oct2016,Virginia Beach,Virginia,51,Virginia Beach city,810,"Library Plaza, Regent University",10000
+23oct2016,Naples,Florida,12,Collier,21,Collier County Fairgrounds,12000
+24oct2016,St. Augustine,Florida,12,St. Johns,109,St. Augustine Amphitheatre,
+24oct2016,Tampa,Florida,12,Hillsborough,57,MidFlorida Credit Union Amphitheatre,21500
+25oct2016,Tallahassee,Florida,12,Leon,73,Tallahassee Car Museum,
+25oct2016,Sanford,Florida,12,Seminole,117,"Million Air Orlando, Orlando Sanford International Airport",10000
+26oct2016,Kinston,North Carolina,37,Lenoir,107,"Kinston Jet Center, Kinston Regional Jetport",3100
+27oct2016,Toledo,Ohio,39,Lucas,95,SeaGate Convention Centre,2900
+27oct2016,Springfield,Ohio,39,Clark,23,Clark County Fairgrounds,5000
+27oct2016,Geneva,Ohio,39,Ashtabula,7,"Track and Field Building, SPIRE Institute",5000
+28oct2016,Lisbon Falls,Maine,23,Androscoggin,1,Open Door Christian Academy,1200
+28oct2016,Cedar Rapids,Iowa,19,Linn,113,McGrath Amphitheatre,5000
+28oct2016,Manchester,New Hampshire,33,Hillsborough,11,Radisson Hotel Manchester Downtown,
+29oct2016,Phoenix,Arizona,4,Maricopa,13,Phoenix Convention Center,8000
+29oct2016,Golden,Colorado,8,Jefferson,59,Jefferson County Events Center,
+30oct2016,Albuquerque,New Mexico,35,Bernalillo,1,"Atlantic Aviation ABQ, Albuquerque International Sunport",4000
+30oct2016,Greeley,Colorado,8,Weld,123,"Bank of Colorado Arena, University of Northern Colorado",3000
+30oct2016,Las Vegas,Nevada,32,Clark,3,The Venetian Las Vegas,8400
+31oct2016,Grand Rapids,Michigan,26,Kent,81,DeltaPlex Arena,6500
+31oct2016,Warren,Michigan,26,Macomb,99,"Sports & Expo Center, Macomb Community College South Campus",5000
+01nov2016,Eau Claire,Wisconsin,55,Eau Claire,35,W.L. Zorn Arena,3000
+02nov2016,Miami,Florida,12,Miami-Dade,86,Bayfront Park,2600
+02nov2016,Orlando,Florida,12,Orange,95,"CFE Arena, Central Florida Fairgrounds",10000
+02nov2016,Pensacola,Florida,12,Escambia,33,Maritime Park's Hunter Amphitheater,8000
+03nov2016,Jacksonville,Florida,12,Duval,31,Jacksonville Equestrian Center,4000
+03nov2016,Concord,North Carolina,37,Cabarrus,25,Cabarrus Arena & Events Center,4200
+03nov2016,Selma,North Carolina,37,Johnston,101,The Farm,15000
+04nov2016,Wilmington,Ohio,39,Clinton,27,"Airborne Maintenance & Engineering Services, Inc",3000
+04nov2016,Hershey,Pennsylvania,42,Dauphin,43,Giant Center,13000
+04nov2016,Atkinson,New Hampshire,33,Rockingham,15,Atkinson Country Club,1000
+05nov2016,Denver,Colorado,8,Denver,31,National Western Complex,8000
+05nov2016,Reno,Nevada,32,Washoe,31,Reno-Sparks Convention Center,8000
+05nov2016,Tampa,Florida,12,Hillsborough,57,Florida State Fairgrounds,12500
+05nov2016,Wilmington,North Carolina,37,New Hanover,129,Wilmington International Airport,5000
+06nov2016,Sioux City,Iowa,19,Woodbury,193,Sioux City Convention Center,4500
+06nov2016,Leesburg,Virginia,51,Loudoun,107,"Agricultural hall, Loudoun Fairgrounds",14500
+06nov2016,Moon Township,Pennsylvania,42,Allegheny,3,Atlantic Aviation,12000
+06nov2016,Minneapolis,Minnesota,27,Hennepin,53,Sun Country Airlines,14500
+06nov2016,Sterling Heights,Michigan,26,Macomb,99,"Freedom Hill Amphitheater, Freedom Hill County Park",8000
+07nov2016,Sarasota,Florida,12,Sarasota,115,"Robarts Arena, Sarasota County Fairgrounds",5000
+07nov2016,Grand Rapids,Michigan,26,Kent,81,DeVos Place Convention Center,4200
+07nov2016,Scranton,Pennsylvania,42,Lackawanna,69,Lackawanna College Student Union,5000
+07nov2016,Manchester,New Hampshire,33,Hillsborough,11,SNHU Arena,12000
+07nov2016,Raleigh,North Carolina,37,Wake,183,Dorton Arena,7000
+01dec2016,Cincinnati,Ohio,39,Hamilton,61,U.S. Bank Arena,
+06dec2016,Fayetteville,North Carolina,37,Cumberland,51,Crown Coliseum,
+08dec2016,Des Moines,Iowa,19,Polk,153,Iowa Events Center,
+09dec2016,Grand Rapids,Michigan,26,Kent,81,DeltaPlex Arena,
+09dec2016,Baton Rouge,Louisiana,22,East Baton Rouge Parish,33,"Dow Chemical Hangar, Baton Rouge Metropolitan Airport",
+13dec2016,West Allis,Wisconsin,55,Milwaukee,79,"Wisconsin Exposition Center, Wisconsin State Fair Park",
+15dec2016,Hershey,Pennsylvania,42,Dauphin,43,Giant Center,
+16dec2016,Orlando,Florida,12,Orange,95,Central Florida Fairgrounds,
+17dec2016,Mobile,Alabama,1,Mobile,97,Ladd–Peebles Stadium,
+18feb2017,Melbourne,Florida,12,Brevard,9,Orlando Melbourne International Airport,
+15mar2017,Nashville,Tennessee,47,Davidson,37,Nashville Municipal Auditorium,
+20mar2017,Louisville,Kentucky,21,Jefferson,111,Kentucky Exposition Center,
+29apr2017,Harrisburg,Pennsylvania,42,Dauphin,43,Pennsylvania Farm Show Complex & Expo Center,
+21jun2017,Cedar Rapids,Iowa,19,Linn,113,U.S. Cellular Center,
+25jul2017,Youngstown,Ohio,39,Mahoning,99,Covelli Centre,
+03aug2017,Huntington,West Virginia,54,Cabell,11,Big Sandy Superstore Arena,
+22aug2017,Phoenix,Arizona,4,Maricopa,13,Phoenix Convention Center,
+22sep2017,Huntsville,Alabama,1,Madison,89,Von Braun Center,
+08dec2017,Pensacola,Florida,12,Escambia,33,Pensacola Bay Center,
+10mar2018,Moon Township,Pennsylvania,42,Allegheny,3,Pittsburgh International Airport,
+28apr2018,Washington Township,Michigan,26,Macomb,99,Total Sports Park,
+10may2018,Elkhart,Indiana,18,Elkhart,39,North Side Middle School,
+29may2018,Nashville,Tennessee,47,Davidson,37,Nashville Municipal Auditorium,
+20jun2018,Duluth,Minnesota,27,St. Louis,137,AMSOIL Arena,
+23jun2018,Las Vegas,Nevada,32,Clark,3,Nevada Republican Convention,
+25jun2018,West Columbia,South Carolina,45,Lexington,63,Airport High School,
+27jun2018,Fargo,North Dakota,38,Cass,17,Scheels Arena,
+05jul2018,Great Falls,Montana,30,Cascade,13,Four Seasons Arena,
+31jul2018,Tampa,Florida,12,Hillsborough,57,Florida State Fairgrounds,
+02aug2018,Wilkes-Barre,Pennsylvania,42,Luzerne,79,Mohegan Sun Arena at Casey Plaza,
+04aug2018,Lewis Center,Ohio,39,Delaware,41,Olentangy Orange High School,
+21aug2018,Charleston,West Virginia,54,Kanawha,39,Charleston Civic Center,
+30aug2018,Evansville,Indiana,18,Vanderburgh,163,Ford Center,
+06sep2018,Billings,Montana,30,Yellowstone,111,MetraPark Arena,
+20sep2018,Las Vegas,Nevada,32,Clark,3,Las Vegas Convention Center,
+21sep2018,Springfield,Missouri,29,Greene,77,JQH Arena,
+29sep2018,Wheeling,West Virginia,54,Ohio,69,WesBanco Arena,
+01oct2018,Johnson City,Tennessee,47,Washington,179,Freedom Hall,
+02oct2018,Southaven,Mississippi,28,DeSoto,33,Landers Center,
+04oct2018,Rochester,Minnesota,27,Olmsted,109,Mayo Civic Center,
+06oct2018,Topeka,Kansas,20,Shawnee,177,Kansas Expocentre,
+09oct2018,Council Bluffs,Iowa,19,Pottawattamie,155,Mid-America Center,
+10oct2018,Erie,Pennsylvania,42,Erie,49,Erie Insurance Arena,
+12oct2018,Lebanon,Ohio,39,Warren,165,Warren County Fairgrounds,
+13oct2018,Richmond,Kentucky,21,Madison,151,Alumni Coliseum,
+18oct2018,Missoula,Montana,30,Missoula,63,Minuteman Aviation,
+19oct2018,Mesa,Arizona,4,Maricopa,13,International Air Response,
+20oct2018,Elko,Nevada,32,Elko,7,Mountain West Aviation,
+22oct2018,Houston,Texas,48,Harris,201,Toyota Center,
+24oct2018,Mosinee,Wisconsin,55,Marathon,73,Central Wisconsin Airport,
+26oct2018,Charlotte,North Carolina,37,Mecklenburg,119,Bojangles' Coliseum,
+27oct2018,Murphysboro,Illinois,17,Jackson,77,Southern Illinois Airport,
+31oct2018,Fort Myers,Florida,12,Lee,71,Hertz Arena,
+01nov2018,Columbia,Missouri,29,Boone,19,Columbia Regional Airport,
+02nov2018,Huntington,West Virginia,54,Cabell,11,Tri-State Airport,
+02nov2018,Indianapolis,Indiana,18,Marion,97,Southport High School,
+03nov2018,Pensacola,Florida,12,Escambia,33,Pensacola International Airport,
+03nov2018,Belgrade,Montana,30,Gallatin,31,Bozeman Yellowstone International Airport,
+04nov2018,Chattanooga,Tennessee,47,Hamilton,65,McKenzie Arena,
+04nov2018,Macon,Georgia,13,Bibb,21,Middle Georgia Regional Airport,
+05nov2018,Fort Wayne,Indiana,18,Allen,3,Allen County War Memorial Coliseum,
+05nov2018,Cleveland,Ohio,39,Cuyahoga,35,I-X Center,
+05nov2018,Cape Girardeau,Missouri,29,Cape Girardeau,31,Show Me Center,
+26nov2018,Biloxi,Mississippi,28,Harrison,47,Mississippi Coast Coliseum,
+26nov2018,Tupelo,Mississippi,28,Lee,81,Tupelo Regional Airport,
+11feb2019,El Paso,Texas,48,El Paso,141,El Paso County Coliseum,
+28mar2019,Grand Rapids,Michigan,26,Kent,81,Van Andel Arena,
+27apr2019,Green Bay,Wisconsin,55,Brown,9,Resch Center,
+08may2019,Panama City Beach,Florida,12,Bay,5,Aaron Bessant Park Amphitheater,
+20may2019,Montoursville,Pennsylvania,42,Lycoming,81,Williamsport Regional Airport,
+18jun2019,Orlando,Florida,12,Orange,95,Amway Center,
+17jul2019,Greenville,North Carolina,37,Pitt,147,Williams Arena,
+01aug2019,Cincinnati,Ohio,39,Hamilton,61,U.S. Bank Arena,
+15aug2019,Manchester,New Hampshire,33,Hillsborough,11,SNHU Arena,

@@ -1,0 +1,128 @@
+date,placename,state,state_fips,countyname,countyfips,candidatesinvolved
+29jul2016,Hatfield,Pennsylvania,42,Montgomery,91,Clinton / Kaine
+29jul2016,Harrisburg,Pennsylvania,42,Dauphin,43,Clinton / Kaine
+29jul2016,Philadelphia,Pennsylvania,42,Philadelphia,101,Clinton / Kaine
+30jul2016,Pittsburgh,Pennsylvania,42,Allegheny,3,Clinton / Kaine
+30jul2016,Youngstown,Ohio,39,Mahoning,99,Clinton / Kaine
+30jul2016,Johnstown,Pennsylvania,42,Cambria,21,Clinton / Kaine
+31jul2016,Cleveland,Ohio,39,Cuyahoga,35,Clinton / Kaine
+31jul2016,Columbus,Ohio,39,Franklin,49,Clinton / Kaine
+01aug2016,Omaha,Nebraska,31,Douglas,55,Clinton
+01aug2016,Richmond,Virginia,51,Richmond city,760,Kaine
+02aug2016,Daytona Beach,Florida,12,Volusia,127,Kaine
+03aug2016,Commerce City,Colorado,8,Adams,1,Clinton
+03aug2016,High Point,North Carolina,37,Guilford,81,Kaine
+03aug2016,Greensboro,North Carolina,37,Guilford,81,Kaine
+04aug2016,Las Vegas,Nevada,32,Clark,3,Clinton
+05aug2016,Grand Rapids,Michigan,26,Kent,81,Kaine
+05aug2016,Milwaukee,Wisconsin,55,Milwaukee,79,Kaine
+08aug2016,St. Petersburg,Florida,12,Pinellas,103,Clinton
+08aug2016,Kissimmee,Florida,12,Osceola,97,Clinton
+10aug2016,Des Moines,Iowa,19,Polk,153,Clinton
+11aug2016,Detroit,Michigan,26,Wayne,163,Clinton
+13aug2016,Manchester,New Hampshire,33,Hillsborough,11,Kaine
+15aug2016,Scranton,Pennsylvania,42,Lackawanna,69,Clinton
+15aug2016,Asheville,North Carolina,37,Buncombe,21,Kaine
+16aug2016,Fayetteville,North Carolina,37,Cumberland,51,Kaine
+16aug2016,Philadelphia,Pennsylvania,42,Philadelphia,101,Clinton
+17aug2016,Cleveland,Ohio,39,Cuyahoga,35,Clinton
+17aug2016,Cedar Rapids,Iowa,19,Linn,113,Kaine
+22aug2016,Las Vegas,Nevada,32,Clark,3,Kaine
+25aug2016,Reno,Nevada,32,Washoe,31,Clinton
+27aug2016,Pembroke Pines,Florida,12,Broward,11,Kaine
+30aug2016,Erie,Pennsylvania,42,Erie,49,Kaine
+30aug2016,Lancaster,Pennsylvania,42,Lancaster,71,Kaine
+31aug2016,Bethlehem,Pennsylvania,42,Northampton,95,Kaine
+05sep2016,Pittsburgh,Pennsylvania,42,Allegheny,3,Kaine
+06sep2016,Wilmington,North Carolina,37,New Hanover,129,Kaine
+06sep2016,Tampa,Florida,12,Hillsborough,57,Clinton
+08sep2016,Charlotte,North Carolina,37,Mecklenburg,119,Clinton
+09sep2016,Norfolk,Virginia,51,Norfolk city,710,Kaine
+12sep2016,Dayton,Ohio,39,Montgomery,113,Kaine
+13sep2016,Ann Arbor,Michigan,26,Washtenaw,161,Kaine
+15sep2016,Exeter,New Hampshire,33,Rockingham,15,Kaine
+15sep2016,Greensboro,North Carolina,37,Guilford,81,Clinton
+19sep2016,Ames,Iowa,19,Story,169,Kaine
+19sep2016,Philadelphia,Pennsylvania,42,Philadelphia,101,Clinton
+21sep2016,Orlando,Florida,12,Orange,95,Clinton
+22sep2016,Reno,Nevada,32,Washoe,31,Kaine
+25sep2016,Miami,Florida,12,Miami-Dade,86,Kaine
+26sep2016,Lakeland,Florida,12,Polk,105,Kaine
+27sep2016,Raleigh,North Carolina,37,Wake,183,Clinton
+28sep2016,Durham,New Hampshire,33,Strafford,17,Clinton
+29sep2016,Des Moines,Iowa,19,Polk,153,Clinton
+30sep2016,Coral Springs,Florida,12,Broward,11,Clinton
+30sep2016,Fort Pierce,Florida,12,St. Lucie,111,Clinton
+03oct2016,Toledo,Ohio,39,Lucas,95,Clinton
+05oct2016,Philadelphia,Pennsylvania,42,Philadelphia,101,Kaine
+06oct2016,Pittsburgh,Pennsylvania,42,Allegheny,3,Kaine
+10oct2016,Detroit,Michigan,26,Wayne,163,Clinton
+10oct2016,Columbus,Ohio,39,Franklin,49,Clinton
+11oct2016,Miami,Florida,12,Miami-Dade,86,Clinton
+12oct2016,Las Vegas,Nevada,32,Clark,3,Clinton
+12oct2016,Davidson,North Carolina,37,Mecklenburg,119,Kaine
+12oct2016,Pueblo,Colorado,8,Pueblo,101,Clinton
+18oct2016,Detroit,Michigan,26,Wayne,163,Kaine
+19oct2016,Asheville,North Carolina,37,Buncombe,21,Kaine
+19oct2016,Springfield,Ohio,39,Clark,23,Kaine
+19oct2016,Upper Arlington,Ohio,39,Franklin,49,Kaine
+20oct2016,Charlotte,North Carolina,37,Mecklenburg,119,Kaine
+20oct2016,Durham,North Carolina,37,Durham,63,Kaine
+21oct2016,Cleveland,Ohio,39,Cuyahoga,35,Clinton
+21oct2016,State College,Pennsylvania,42,Centre,27,Kaine
+22oct2016,Pittsburgh,Pennsylvania,42,Allegheny,3,Clinton / Kaine
+22oct2016,Philadelphia,Pennsylvania,42,Philadelphia,101,Clinton / Kaine
+23oct2016,Orlando,Florida,12,Orange,95,Kaine
+23oct2016,Gainesville,Florida,12,Alachua,1,Kaine
+23oct2016,Charlotte,North Carolina,37,Mecklenburg,119,Clinton
+23oct2016,Raleigh,North Carolina,37,Wake,183,Clinton
+24oct2016,Miami,Florida,12,Miami-Dade,86,Kaine
+24oct2016,Manchester,New Hampshire,33,Hillsborough,11,Clinton
+24oct2016,West Palm Beach,Florida,12,Palm Beach,99,Kaine
+25oct2016,Coconut Creek,Florida,12,Broward,11,Clinton
+26oct2016,Tampa,Florida,12,Hillsborough,57,Clinton
+26oct2016,Newtown,Pennsylvania,42,Bucks,17,Kaine
+26oct2016,Allentown,Pennsylvania,42,Lehigh,77,Kaine
+26oct2016,Lake Worth,Florida,12,Palm Beach,99,Clinton
+27oct2016,Lorain,Ohio,39,Lorain,93,Kaine
+27oct2016,Gambier,Ohio,39,Knox,83,Kaine
+27oct2016,Winston-Salem,North Carolina,37,Forsyth,67,Clinton
+28oct2016,Des Moines,Iowa,19,Polk,153,Clinton
+28oct2016,Cedar Rapids,Iowa,19,Linn,113,Clinton
+28oct2016,Tallahassee,Florida,12,Leon,73,Kaine
+29oct2016,Daytona Beach,Florida,12,Volusia,127,Clinton
+30oct2016,Taylor,Michigan,26,Wayne,163,Kaine
+30oct2016,Wilton Manors,Florida,12,Broward,11,Clinton
+31oct2016,Jacksonville,North Carolina,37,Onslow,133,Kaine
+31oct2016,Sanford,North Carolina,37,Lee,105,Kaine
+31oct2016,Kent,Ohio,39,Portage,133,Clinton
+31oct2016,Cincinnati,Ohio,39,Hamilton,61,Clinton
+01nov2016,Fort Lauderdale,Florida,12,Broward,11,Clinton
+01nov2016,Madison,Wisconsin,55,Dane,25,Kaine
+01nov2016,Appleton,Wisconsin,55,Outagamie,87,Kaine
+01nov2016,Sanford,Florida,12,Seminole,117,Clinton
+01nov2016,Dade City,Florida,12,Pasco,101,Clinton
+02nov2016,Dubuque,Iowa,19,Dubuque,61,Kaine
+02nov2016,Tempe,Arizona,4,Maricopa,13,Clinton
+02nov2016,Las Vegas,Nevada,32,Clark,3,Clinton
+03nov2016,Raleigh,North Carolina,37,Wake,183,Clinton
+03nov2016,Winterville,North Carolina,37,Pitt,147,Clinton
+03nov2016,Phoenix,Arizona,4,Maricopa,13,Kaine
+03nov2016,Tucson,Arizona,4,Pima,19,Kaine
+04nov2016,Detroit,Michigan,26,Wayne,163,Clinton
+04nov2016,Cleveland,Ohio,39,Cuyahoga,35,Clinton
+04nov2016,Melbourne,Florida,12,Brevard,9,Kaine
+04nov2016,Pittsburgh,Pennsylvania,42,Allegheny,3,Clinton
+05nov2016,Fort Myers,Florida,12,Lee,71,Kaine
+05nov2016,Pembroke Pines,Florida,12,Broward,11,Clinton
+06nov2016,Cleveland,Ohio,39,Cuyahoga,35,Clinton
+06nov2016,Green Bay,Wisconsin,55,Brown,9,Kaine
+06nov2016,Manchester,New Hampshire,33,Hillsborough,11,Clinton
+07nov2016,Wilmington,North Carolina,37,New Hanover,129,Kaine
+07nov2016,Raleigh,North Carolina,37,Wake,183,Clinton
+07nov2016,Allendale,Michigan,26,Ottawa,139,Clinton
+07nov2016,Richmond,Virginia,51,Richmond city,760,Kaine
+07nov2016,Fairfax,Virginia,51,Fairfax city,600,Kaine
+07nov2016,Philadelphia,Pennsylvania,42,Philadelphia,101,Clinton
+07nov2016,Oakland,Pennsylvania,42,Cambria,21,Clinton
+07nov2016,Charlotte,North Carolina,37,Mecklenburg,119,Kaine

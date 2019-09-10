@@ -1,0 +1,263 @@
+---------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\mlilley\Dropbox\Trump Rallies\Log Files/Trump_rallies_data_verification.log
+  log type:  text
+ opened on:   4 Sep 2019, 10:59:16
+
+. set more off
+
+. clear all
+
+. macro drop _all
+
+. 
+. set emptycells keep
+
+. 
+. *******************************************************************************
+. * (1) Load data and Import
+. *******************************************************************************
+. 
+. * College Education
+. use Intermediate/college_educated.dta, clear
+
+. 
+. * Jewish Population (and Total Population)
+. merge 1:1 fips using Intermediate/jewish_population.dta, keep(master match) nogenerate
+(note: variable fips was float, now double to accommodate using data's values)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             2
+        from master                         2  
+        from using                          0  
+
+    matched                             3,140  
+    -----------------------------------------
+
+. 
+. * 2012 Presidential Election 
+. merge 1:1 fips using Intermediate/presidential_election.dta, keep(master match) keepusing(gop2012share)
+>  nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             3
+        from master                         3  
+        from using                          0  
+
+    matched                             3,139  
+    -----------------------------------------
+
+. 
+. * SPLC Hate Groups
+. merge m:1 state using Intermediate/hate_groups.dta, keep(master match) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                            34
+        from master                        34  
+        from using                          0  
+
+    matched                             3,108  
+    -----------------------------------------
+
+. * Fill Unmatched Data as Having No Hate Groups
+. replace hategroupscount = 0 if missing(hategroupscount)
+(34 real changes made)
+
+. 
+. * Expand Data Set by Month
+. expand 12
+(34,562 observations created)
+
+. bysort fips: gen month = _n
+
+. 
+. gen monthyear = mofd(mdy(month,01,2016))
+
+. format monthyear %tm
+
+. 
+. * Trump Rallies
+. merge 1:1 fips monthyear using Intermediate/Trump_rallies.dta, keep(master match) keepusing(rallycount)
+>  nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        37,429
+        from master                    37,429  
+        from using                          0  
+
+    matched                               275  
+    -----------------------------------------
+
+. rename rallycount trumprallycount
+
+. * Fill Unmatched Data as Having Zero Rallies
+. replace trumprallycount = 0 if missing(trumprallycount)
+(37,429 real changes made)
+
+. 
+. ** Clinton Rallies
+. merge 1:1 fips monthyear using Intermediate/Clinton_rallies.dta, keep(master match) keepusing(rallycoun
+> t) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        37,640
+        from master                    37,640  
+        from using                          0  
+
+    matched                                64  
+    -----------------------------------------
+
+. rename rallycount clintonrallycount
+
+. * Fill Unmatched Data as Having Zero Rallies
+. replace clintonrallycount = 0 if missing(clintonrallycount)
+(37,640 real changes made)
+
+. 
+. * ADL Hate Incidents
+. merge 1:1 fips monthyear using Intermediate/hate_incidents.dta, keep(master match) keepusing(incidentco
+> unt) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        37,016
+        from master                    37,016  
+        from using                          0  
+
+    matched                               688  
+    -----------------------------------------
+
+. * Fill Unmatched Data as Having Zero Incidents
+. replace incidentcount = 0 if missing(incidentcount)
+(37,016 real changes made)
+
+. 
+. * Crime
+. merge m:1 fips using Intermediate/crime_data.dta, keep(master match) keepusing(violent_crime_rate prope
+> rty_crime_rate) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           120
+        from master                       120  
+        from using                          0  
+
+    matched                            37,584  
+    -----------------------------------------
+
+. * Fix NYC
+. summarize violent_crime_rate if fips == 36061
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+violent_cr~e |         12    58.68532           0   58.68532   58.68532
+
+. local nyc_violent = r(mean)
+
+. summarize property_crime_rate if fips == 36061
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+property_c~e |         12    152.6548           0   152.6548   152.6548
+
+. local nyc_property = r(mean)
+
+. replace violent_crime_rate = `nyc_violent' if state_fips == 36 & violent_crime_rate == .
+(48 real changes made)
+
+. replace property_crime_rate = `nyc_property' if state_fips == 36 & property_crime_rate == .
+(48 real changes made)
+
+. 
+. replace violent_crime_rate = 0 if violent_crime_rate == .
+(96 real changes made)
+
+. replace property_crime_rate = 0 if property_crime_rate == .
+(96 real changes made)
+
+. 
+. * Census Regions
+. merge m:1 state_fips using Intermediate/census_regions.dta, keep(master match) keepusing(region divisio
+> n) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                            37,704  
+    -----------------------------------------
+
+. 
+. * Presence of Trump Rally - Time Structure
+. bysort fips (monthyear): gen trumprallyoccured = sum(trumprallycount) > 0 
+
+. 
+. * Presence of Clinton Rally - Time Structure
+. bysort fips (monthyear): gen clintonrallyoccured = sum(clintonrallycount) > 0 
+
+. 
+. 
+. *******************************************************************************
+. * (2) Data Verification
+. *******************************************************************************
+. 
+. * Trump Rally-Month Pairs
+. tab trumprallycount
+
+    (count) |
+      count |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     37,429       99.27       99.27
+          1 |        268        0.71       99.98
+          2 |          6        0.02      100.00
+          4 |          1        0.00      100.00
+------------+-----------------------------------
+      Total |     37,704      100.00
+
+. 
+. * Summary statistics of variables in regression
+. summarize incidentcount trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount viol
+> ent_crime_rate property_crime_rate
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+incidentco~t |     37,704    .0349035    .3781723          0         16
+trumprally~d |     37,704    .0412423    .1988528          0          1
+collegeshare |     37,704     .204151    .0901954   .0188679   .7877052
+jewishpops~e |     37,680    .0029793    .0128373          0   .2929221
+gop2012share |     37,668    .5955852     .147958   .0727829   .9586207
+-------------+---------------------------------------------------------
+hategroups~t |     37,704    24.55602    18.09659          0         79
+violent_cr~e |     37,704    28.15861    30.30983          0    920.882
+property_c~e |     37,704    200.3184    144.4986          0   3480.009
+
+. 
+. * Population Differences by Presence of Rally (Ever)
+. bysort fips (trumprallyoccured): keep if _n == _N
+(34,562 observations deleted)
+
+. table trumprallyoccured, contents(mean censuspop10)
+
+--------------------------
+trumprall |
+yoccured  | mean(censu~10)
+----------+---------------
+        0 |    73346.57405
+        1 |    473397.7398
+--------------------------
+
+. 
+. *******************************************************************************
+. * (3) End of file
+. *******************************************************************************
+. 
+. log close
+      name:  <unnamed>
+       log:  C:\Users\mlilley\Dropbox\Trump Rallies\Log Files/Trump_rallies_data_verification.log
+  log type:  text
+ closed on:   4 Sep 2019, 10:59:17
+---------------------------------------------------------------------------------------------------------

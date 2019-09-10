@@ -1,0 +1,1536 @@
+------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\mlilley\Dropbox\Trump Rallies\Log Files/Trump_rallies_analysis.log
+  log type:  text
+ opened on:  10 Sep 2019, 00:47:03
+
+. set more off
+
+. clear all
+
+. macro drop _all
+
+. 
+. set emptycells keep
+
+. 
+. *******************************************************************************
+. * (1) Load data and Import
+. *******************************************************************************
+. 
+. * College Education
+. use Intermediate/college_educated.dta, clear
+
+. 
+. label variable collegeshare "\% College"
+
+. 
+. * Jewish Population (and Total Population)
+. merge 1:1 fips using Intermediate/jewish_population.dta, keep(master match) nogenerate
+(note: variable fips was float, now double to accommodate using data's values)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             2
+        from master                         2  
+        from using                          0  
+
+    matched                             3,140  
+    -----------------------------------------
+
+. 
+. label variable jewishpopshare "Jewish Pop. (p.c.)"
+
+. 
+. * 2012 Presidential Election 
+. merge 1:1 fips using Intermediate/presidential_election.dta, keep(master match) keepusing(gop2012share) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             3
+        from master                         3  
+        from using                          0  
+
+    matched                             3,139  
+    -----------------------------------------
+
+. 
+. label variable gop2012share "\% Rep. 2012" 
+
+. 
+. * SPLC Hate Groups
+. merge m:1 state using Intermediate/hate_groups.dta, keep(master match) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                            34
+        from master                        34  
+        from using                          0  
+
+    matched                             3,108  
+    -----------------------------------------
+
+. * Fill Unmatched Data as Having No Hate Groups
+. replace hategroupscount = 0 if missing(hategroupscount)
+(34 real changes made)
+
+. 
+. label variable hategroupscount "# Hate Groups"
+
+. 
+. * Expand Data Set by Month
+. expand 12
+(34,562 observations created)
+
+. bysort fips: gen month = _n
+
+. 
+. label define month_lbl 1 "January" 2 "February"  3 "March" 4 "April" 5 "May" 6 "June" 7 "July" 8 "August" 9 "September" 10 "October" 11 "Novem
+> ber" 12 "December", add
+
+. label values month month_lbl
+
+. 
+. gen monthyear = mofd(mdy(month,01,2016))
+
+. format monthyear %tm
+
+. 
+. * Trump Rallies
+. merge 1:1 fips monthyear using Intermediate/Trump_rallies.dta, keep(master match) keepusing(rallycount) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        37,429
+        from master                    37,429  
+        from using                          0  
+
+    matched                               275  
+    -----------------------------------------
+
+. rename rallycount trumprallycount
+
+. * Fill Unmatched Data as Having Zero Rallies
+. replace trumprallycount = 0 if missing(trumprallycount)
+(37,429 real changes made)
+
+. 
+. label variable trumprallycount "Trump Rally Count"
+
+. 
+. * Clinton Rallies
+. merge 1:1 fips monthyear using Intermediate/Clinton_rallies.dta, keep(master match) keepusing(rallycount) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        37,640
+        from master                    37,640  
+        from using                          0  
+
+    matched                                64  
+    -----------------------------------------
+
+. rename rallycount clintonrallycount
+
+. * Fill Unmatched Data as Having Zero Rallies
+. replace clintonrallycount = 0 if missing(clintonrallycount)
+(37,640 real changes made)
+
+. 
+. label variable clintonrallycount "Clinton Rally Count"
+
+. 
+. * ADL Hate Incidents
+. merge 1:1 fips monthyear using Intermediate/hate_incidents.dta, keep(master match) keepusing(incidentcount) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        37,016
+        from master                    37,016  
+        from using                          0  
+
+    matched                               688  
+    -----------------------------------------
+
+. * Fill Unmatched Data as Having Zero Incidents
+. replace incidentcount = 0 if missing(incidentcount)
+(37,016 real changes made)
+
+. 
+. label variable incidentcount "Hate Incidents"
+
+. 
+. * FBI Hate Crimes
+. merge 1:1 fips monthyear using Intermediate/hate_crimes.dta, keep(master match) keepusing(hate_crimes) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        35,135
+        from master                    35,135  
+        from using                          0  
+
+    matched                             2,569  
+    -----------------------------------------
+
+. * Fix NYC
+. gen NYCcounty = inlist(fips,36061,36081,36085,36047,36005)
+
+. gen NotManhattan = (fips != 36061) if NYCcounty == 1
+(37,644 missing values generated)
+
+. summarize censuspop10 if (NYCcounty == 1 & month == 1)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+ censuspop10 |          5     1635027    796289.5     468730    2504700
+
+. local NYC_pop = r(mean) * r(N) 
+
+. // Initially apply entire NYC data for month to all NYC counties
+. bysort NYCcounty monthyear (NotManhattan hate_crimes): replace hate_crimes = hate_crimes[_n-1] if NYCcounty == 1 & _n != 1
+(48 real changes made)
+
+. // Population weight
+. replace hate_crimes = round(hate_crimes * censuspop10 / `NYC_pop') if NYCcounty == 1
+(60 real changes made)
+
+. * Fill Unmatched Data as Having Zero Hate Crimes
+. replace hate_crimes = 0 if missing(hate_crimes)
+(35,088 real changes made)
+
+. 
+. label variable hate_crimes "Hate Crimes"
+
+. 
+. * Crime
+. merge m:1 fips using Intermediate/crime_data.dta, keep(master match) keepusing(violent_crime_rate property_crime_rate) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           120
+        from master                       120  
+        from using                          0  
+
+    matched                            37,584  
+    -----------------------------------------
+
+. * Fix NYC
+. summarize violent_crime_rate if fips == 36061
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+violent_cr~e |         12    58.68532           0   58.68532   58.68532
+
+. local nyc_violent = r(mean)
+
+. summarize property_crime_rate if fips == 36061
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+property_c~e |         12    152.6548           0   152.6548   152.6548
+
+. local nyc_property = r(mean)
+
+. replace violent_crime_rate = `nyc_violent' if state_fips == 36 & violent_crime_rate == .
+(48 real changes made)
+
+. replace property_crime_rate = `nyc_property' if state_fips == 36 & property_crime_rate == .
+(48 real changes made)
+
+. 
+. replace violent_crime_rate = 0 if violent_crime_rate == .
+(96 real changes made)
+
+. replace property_crime_rate = 0 if property_crime_rate == .
+(96 real changes made)
+
+. 
+. label variable violent_crime_rate "Violent Crime"
+
+. label variable property_crime_rate "Property Crime"
+
+. 
+. * Census Regions
+. merge m:1 state_fips using Intermediate/census_regions.dta, keep(master match) keepusing(region division) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                            37,704  
+    -----------------------------------------
+
+. 
+. * Presence of Trump Rally - Time Structure
+. bysort fips (monthyear): gen trumprallyoccured = sum(trumprallycount) > 0 
+
+. 
+. label variable trumprallyoccured "Trump Rally"
+
+. 
+. * Presence of Clinton Rally - Time Structure
+. bysort fips (monthyear): gen clintonrallyoccured = sum(clintonrallycount) > 0 
+
+. 
+. label variable clintonrallyoccured "Clinton Rally"
+
+. 
+. *******************************************************************************
+. * (2) Regression Analysis
+. *******************************************************************************
+. 
+. * Negative Binomial Regressions
+. nbreg incidentcount trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11).m
+> onth ib(4).region, dispersion(mean) vce(cluster fips)
+
+Fitting Poisson model:
+
+Iteration 0:   log pseudolikelihood = -108938.87  (not concave)
+Iteration 1:   log pseudolikelihood = -100223.76  (not concave)
+Iteration 2:   log pseudolikelihood = -92205.863  (not concave)
+Iteration 3:   log pseudolikelihood = -89255.646  (not concave)
+Iteration 4:   log pseudolikelihood = -88132.775  (not concave)
+Iteration 5:   log pseudolikelihood = -86530.225  (not concave)
+Iteration 6:   log pseudolikelihood = -84756.268  (not concave)
+Iteration 7:   log pseudolikelihood = -83111.654  (not concave)
+Iteration 8:   log pseudolikelihood = -79571.025  
+Iteration 9:   log pseudolikelihood = -69194.671  (backed up)
+Iteration 10:  log pseudolikelihood = -49708.019  (backed up)
+Iteration 11:  log pseudolikelihood = -39806.277  (backed up)
+Iteration 12:  log pseudolikelihood =  -21627.86  (backed up)
+Iteration 13:  log pseudolikelihood = -12637.632  (backed up)
+Iteration 14:  log pseudolikelihood = -7739.5001  
+Iteration 15:  log pseudolikelihood = -3744.6801  
+Iteration 16:  log pseudolikelihood = -3648.4089  
+Iteration 17:  log pseudolikelihood = -3625.1489  
+Iteration 18:  log pseudolikelihood = -3625.1337  
+Iteration 19:  log pseudolikelihood = -3625.1337  
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood =  -5752.871  (not concave)
+Iteration 1:   log pseudolikelihood = -4311.4051  
+Iteration 2:   log pseudolikelihood = -4290.3218  
+Iteration 3:   log pseudolikelihood = -4290.3154  
+Iteration 4:   log pseudolikelihood = -4290.3154  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -3936.3324  (not concave)
+Iteration 1:   log pseudolikelihood = -3370.9374  
+Iteration 2:   log pseudolikelihood = -2967.7808  
+Iteration 3:   log pseudolikelihood = -2932.7761  
+Iteration 4:   log pseudolikelihood = -2916.4582  
+Iteration 5:   log pseudolikelihood = -2916.2195  
+Iteration 6:   log pseudolikelihood = -2916.2193  
+
+Negative binomial regression                    Number of obs     =     37,668
+                                                Wald chi2(21)     =    1019.29
+Dispersion           = mean                     Prob > chi2       =     0.0000
+Log pseudolikelihood = -2916.2193               Pseudo R2         =     0.3203
+
+                                      (Std. Err. adjusted for 3,139 clusters in fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+      incidentcount |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+  trumprallyoccured |   1.115182   .1759202     6.34   0.000      .770385    1.459979
+       collegeshare |   5.597647   .8382657     6.68   0.000     3.954677    7.240618
+     jewishpopshare |   29.63166   5.837507     5.08   0.000     18.19036    41.07297
+       gop2012share |  -4.090764   .7139121    -5.73   0.000    -5.490006   -2.691522
+    hategroupscount |   .0219755   .0050831     4.32   0.000     .0120129    .0319382
+ violent_crime_rate |   .0042751   .0029471     1.45   0.147    -.0015011    .0100513
+property_crime_rate |   .0007122   .0004462     1.60   0.110    -.0001623    .0015866
+                    |
+              month |
+           January  |  -.9766999   .1852414    -5.27   0.000    -1.339766   -.6136334
+          February  |  -1.007546   .1642666    -6.13   0.000    -1.329503   -.6855891
+             March  |  -.3966985   .1552554    -2.56   0.011    -.7009935   -.0924034
+             April  |  -.7467124    .169201    -4.41   0.000     -1.07834   -.4150845
+               May  |  -.7223358   .1732791    -4.17   0.000    -1.061957   -.3827149
+              June  |  -.7611109   .1758939    -4.33   0.000    -1.105857   -.4163653
+              July  |  -1.175221   .2148375    -5.47   0.000    -1.596294   -.7541468
+            August  |   -.952113   .1690459    -5.63   0.000    -1.283437   -.6207892
+         September  |  -.9284654   .1670858    -5.56   0.000    -1.255948   -.6009833
+           October  |  -.6520373   .1434482    -4.55   0.000    -.9331906    -.370884
+          December  |  -.4353948   .1718493    -2.53   0.011    -.7722132   -.0985764
+                    |
+             region |
+         Northeast  |   .7020086   .2758621     2.54   0.011     .1613288    1.242688
+           Midwest  |  -.4082099   .2672995    -1.53   0.127    -.9321073    .1156875
+             South  |  -.6968988   .2863788    -2.43   0.015    -1.258191   -.1356066
+                    |
+              _cons |  -3.875833   .6147529    -6.30   0.000    -5.080727    -2.67094
+--------------------+----------------------------------------------------------------
+           /lnalpha |    1.46177   .1717389                      1.125168    1.798372
+--------------------+----------------------------------------------------------------
+              alpha |   4.313588   .7408109                      3.080734    6.039807
+-------------------------------------------------------------------------------------
+
+. estimates store nb_baseline_trump
+
+. 
+. predict incident_hat if e(sample) == 1, xb
+(36 missing values generated)
+
+. 
+. nbreg incidentcount clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11)
+> .month ib(4).region, dispersion(mean) vce(cluster fips)
+
+Fitting Poisson model:
+
+Iteration 0:   log pseudolikelihood = -109427.86  (not concave)
+Iteration 1:   log pseudolikelihood = -100673.64  (not concave)
+Iteration 2:   log pseudolikelihood = -92619.751  (not concave)
+Iteration 3:   log pseudolikelihood = -89658.727  (not concave)
+Iteration 4:   log pseudolikelihood =  -88613.24  (not concave)
+Iteration 5:   log pseudolikelihood = -87220.465  (not concave)
+Iteration 6:   log pseudolikelihood = -85191.383  (not concave)
+Iteration 7:   log pseudolikelihood =  -80258.72  
+Iteration 8:   log pseudolikelihood = -53125.521  (backed up)
+Iteration 9:   log pseudolikelihood =  -49048.14  
+Iteration 10:  log pseudolikelihood = -42591.762  
+Iteration 11:  log pseudolikelihood = -18538.579  
+Iteration 12:  log pseudolikelihood = -7412.1301  
+Iteration 13:  log pseudolikelihood = -3874.2853  
+Iteration 14:  log pseudolikelihood = -3793.8375  
+Iteration 15:  log pseudolikelihood =  -3786.804  
+Iteration 16:  log pseudolikelihood = -3786.7863  
+Iteration 17:  log pseudolikelihood = -3786.7863  
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood =  -5752.871  (not concave)
+Iteration 1:   log pseudolikelihood = -4311.4051  
+Iteration 2:   log pseudolikelihood = -4290.3218  
+Iteration 3:   log pseudolikelihood = -4290.3154  
+Iteration 4:   log pseudolikelihood = -4290.3154  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -3930.4904  (not concave)
+Iteration 1:   log pseudolikelihood =  -3355.802  
+Iteration 2:   log pseudolikelihood = -2970.2448  
+Iteration 3:   log pseudolikelihood = -2949.8233  
+Iteration 4:   log pseudolikelihood = -2947.3715  
+Iteration 5:   log pseudolikelihood = -2947.3642  
+Iteration 6:   log pseudolikelihood = -2947.3642  
+
+Negative binomial regression                    Number of obs     =     37,668
+                                                Wald chi2(21)     =     897.71
+Dispersion           = mean                     Prob > chi2       =     0.0000
+Log pseudolikelihood = -2947.3642               Pseudo R2         =     0.3130
+
+                                      (Std. Err. adjusted for 3,139 clusters in fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+      incidentcount |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+clintonrallyoccured |   1.212789   .3699562     3.28   0.001     .4876879     1.93789
+       collegeshare |   6.606561   .8663119     7.63   0.000     4.908621    8.304501
+     jewishpopshare |   29.55608    5.47551     5.40   0.000     18.82428    40.28788
+       gop2012share |  -3.897726   .7746085    -5.03   0.000    -5.415931   -2.379521
+    hategroupscount |   .0221006   .0051692     4.28   0.000     .0119693     .032232
+ violent_crime_rate |   .0049334   .0039144     1.26   0.208    -.0027386    .0126054
+property_crime_rate |   .0009642   .0004673     2.06   0.039     .0000483      .00188
+                    |
+              month |
+           January  |  -1.178671   .1819139    -6.48   0.000    -1.535216   -.8221264
+          February  |  -1.178754   .1719685    -6.85   0.000    -1.515806   -.8417022
+             March  |  -.5310289    .157712    -3.37   0.001    -.8401387    -.221919
+             April  |  -.8186548   .1694009    -4.83   0.000    -1.150675   -.4866351
+               May  |  -.7921343   .1751312    -4.52   0.000    -1.135385   -.4488834
+              June  |  -.7980461   .1796119    -4.44   0.000    -1.150079   -.4460132
+              July  |  -1.205905   .2180013    -5.53   0.000    -1.633179   -.7786299
+            August  |  -1.012467   .1666427    -6.08   0.000     -1.33908   -.6858529
+         September  |  -.9449451   .1646566    -5.74   0.000    -1.267666    -.622224
+           October  |  -.6619428   .1417253    -4.67   0.000    -.9397193   -.3841663
+          December  |  -.4233588   .1653857    -2.56   0.010    -.7475087   -.0992088
+                    |
+             region |
+         Northeast  |   .7640171   .2717235     2.81   0.005     .2314489    1.296585
+           Midwest  |  -.3293797   .2787637    -1.18   0.237    -.8757465     .216987
+             South  |  -.6858611    .287949    -2.38   0.017    -1.250231   -.1214915
+                    |
+              _cons |  -4.168192    .707293    -5.89   0.000    -5.554461   -2.781923
+--------------------+----------------------------------------------------------------
+           /lnalpha |   1.559144   .1592033                      1.247111    1.871176
+--------------------+----------------------------------------------------------------
+              alpha |   4.754748   .7569715                      3.480274    6.495934
+-------------------------------------------------------------------------------------
+
+. estimates store nb_baseline_clinton
+
+. 
+. * Control for County Population
+. gen log_pop = ln(censuspop10)
+(24 missing values generated)
+
+. label variable log_pop "Population (Log)"
+
+. 
+. nbreg incidentcount trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate log_pop 
+> ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
+
+Fitting Poisson model:
+
+Iteration 0:   log pseudolikelihood = -105678.79  (not concave)
+Iteration 1:   log pseudolikelihood = -97224.491  (not concave)
+Iteration 2:   log pseudolikelihood = -89446.532  (not concave)
+Iteration 3:   log pseudolikelihood = -86584.631  (not concave)
+Iteration 4:   log pseudolikelihood = -85492.259  (not concave)
+Iteration 5:   log pseudolikelihood = -83915.418  (not concave)
+Iteration 6:   log pseudolikelihood =  -82058.64  (not concave)
+Iteration 7:   log pseudolikelihood = -79844.985  
+Iteration 8:   log pseudolikelihood = -45735.961  (backed up)
+Iteration 9:   log pseudolikelihood = -14744.615  (backed up)
+Iteration 10:  log pseudolikelihood = -5056.5577  (backed up)
+Iteration 11:  log pseudolikelihood = -3474.5361  
+Iteration 12:  log pseudolikelihood =   -2721.09  
+Iteration 13:  log pseudolikelihood = -2685.5439  
+Iteration 14:  log pseudolikelihood = -2684.6335  
+Iteration 15:  log pseudolikelihood = -2684.6324  
+Iteration 16:  log pseudolikelihood = -2684.6324  
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood =  -5752.871  (not concave)
+Iteration 1:   log pseudolikelihood = -4311.4051  
+Iteration 2:   log pseudolikelihood = -4290.3218  
+Iteration 3:   log pseudolikelihood = -4290.3154  
+Iteration 4:   log pseudolikelihood = -4290.3154  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -4041.8054  (not concave)
+Iteration 1:   log pseudolikelihood = -3576.1353  
+Iteration 2:   log pseudolikelihood = -2878.1433  
+Iteration 3:   log pseudolikelihood = -2528.8263  
+Iteration 4:   log pseudolikelihood = -2509.5096  
+Iteration 5:   log pseudolikelihood = -2509.1911  
+Iteration 6:   log pseudolikelihood = -2509.1909  
+
+Negative binomial regression                    Number of obs     =     37,668
+                                                Wald chi2(22)     =    1488.86
+Dispersion           = mean                     Prob > chi2       =     0.0000
+Log pseudolikelihood = -2509.1909               Pseudo R2         =     0.4152
+
+                                      (Std. Err. adjusted for 3,139 clusters in fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+      incidentcount |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+  trumprallyoccured |   .1772453   .1327883     1.33   0.182     -.083015    .4375055
+       collegeshare |   3.004377   .7814306     3.84   0.000     1.472801    4.535953
+     jewishpopshare |   9.791817   2.911712     3.36   0.001     4.084967    15.49867
+       gop2012share |  -1.346074   .5709208    -2.36   0.018    -2.465058   -.2270897
+    hategroupscount |  -.0053681   .0035229    -1.52   0.128    -.0122727    .0015366
+ violent_crime_rate |   .0024907   .0031583     0.79   0.430    -.0036994    .0086808
+property_crime_rate |   .0008169   .0008083     1.01   0.312    -.0007672    .0024011
+            log_pop |   1.174805   .0727236    16.15   0.000      1.03227    1.317341
+                    |
+              month |
+           January  |  -1.138261   .1759729    -6.47   0.000    -1.483162   -.7933609
+          February  |  -1.196069   .1652277    -7.24   0.000     -1.51991   -.8722289
+             March  |  -.5507725   .1484724    -3.71   0.000    -.8417729    -.259772
+             April  |  -.8892614   .1490922    -5.96   0.000    -1.181477   -.5970461
+               May  |  -.8568902   .1586271    -5.40   0.000    -1.167794   -.5459867
+              June  |  -.9729795   .1568926    -6.20   0.000    -1.280483   -.6654757
+              July  |  -1.304989    .189112    -6.90   0.000    -1.675642   -.9343366
+            August  |   -1.06657   .1586082    -6.72   0.000    -1.377436   -.7557034
+         September  |  -.9731267   .1596092    -6.10   0.000    -1.285955   -.6602985
+           October  |  -.6411417   .1389391    -4.61   0.000    -.9134574   -.3688261
+          December  |  -.4560865   .1438292    -3.17   0.002    -.7379867   -.1741864
+                    |
+             region |
+         Northeast  |   .7473078   .2307514     3.24   0.001     .2950434    1.199572
+           Midwest  |  -.3834973    .249132    -1.54   0.124     -.871787    .1047924
+             South  |  -.2220592   .2086003    -1.06   0.287    -.6309083    .1867898
+                    |
+              _cons |  -17.52053   .9790816   -17.89   0.000     -19.4395   -15.60157
+--------------------+----------------------------------------------------------------
+           /lnalpha |   .3038334     .21069                     -.1091115    .7167783
+--------------------+----------------------------------------------------------------
+              alpha |   1.355043   .2854941                      .8966304    2.047825
+-------------------------------------------------------------------------------------
+
+. estimates store nb_population_trump
+
+. 
+. nbreg incidentcount clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate log_po
+> p ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
+
+Fitting Poisson model:
+
+Iteration 0:   log pseudolikelihood = -105584.03  (not concave)
+Iteration 1:   log pseudolikelihood = -97137.321  (not concave)
+Iteration 2:   log pseudolikelihood = -89366.335  (not concave)
+Iteration 3:   log pseudolikelihood = -86509.049  (not concave)
+Iteration 4:   log pseudolikelihood = -85488.167  (not concave)
+Iteration 5:   log pseudolikelihood = -84090.021  (not concave)
+Iteration 6:   log pseudolikelihood = -82044.681  (not concave)
+Iteration 7:   log pseudolikelihood = -77505.013  
+Iteration 8:   log pseudolikelihood = -55167.093  (backed up)
+Iteration 9:   log pseudolikelihood = -41982.246  (backed up)
+Iteration 10:  log pseudolikelihood = -15712.499  (backed up)
+Iteration 11:  log pseudolikelihood = -9402.6169  
+Iteration 12:  log pseudolikelihood = -5932.4402  
+Iteration 13:  log pseudolikelihood = -2822.9413  
+Iteration 14:  log pseudolikelihood = -2719.4879  
+Iteration 15:  log pseudolikelihood =   -2693.14  
+Iteration 16:  log pseudolikelihood = -2692.6617  
+Iteration 17:  log pseudolikelihood = -2692.6609  
+Iteration 18:  log pseudolikelihood = -2692.6609  
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood =  -5752.871  (not concave)
+Iteration 1:   log pseudolikelihood = -4311.4051  
+Iteration 2:   log pseudolikelihood = -4290.3218  
+Iteration 3:   log pseudolikelihood = -4290.3154  
+Iteration 4:   log pseudolikelihood = -4290.3154  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -4046.0941  (not concave)
+Iteration 1:   log pseudolikelihood = -3586.3836  
+Iteration 2:   log pseudolikelihood = -3047.8022  
+Iteration 3:   log pseudolikelihood =  -2733.557  (not concave)
+Iteration 4:   log pseudolikelihood = -2600.6149  
+Iteration 5:   log pseudolikelihood =   -2566.01  
+Iteration 6:   log pseudolikelihood = -2521.9213  
+Iteration 7:   log pseudolikelihood = -2511.7461  
+Iteration 8:   log pseudolikelihood = -2510.4628  
+Iteration 9:   log pseudolikelihood = -2510.4596  
+Iteration 10:  log pseudolikelihood = -2510.4596  
+
+Negative binomial regression                    Number of obs     =     37,668
+                                                Wald chi2(22)     =    1484.38
+Dispersion           = mean                     Prob > chi2       =     0.0000
+Log pseudolikelihood = -2510.4596               Pseudo R2         =     0.4149
+
+                                      (Std. Err. adjusted for 3,139 clusters in fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+      incidentcount |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+clintonrallyoccured |   .1607537   .2245615     0.72   0.474    -.2793787    .6008861
+       collegeshare |   3.104802    .792908     3.92   0.000     1.550731    4.658873
+     jewishpopshare |   9.736297   2.924159     3.33   0.001     4.005051    15.46754
+       gop2012share |  -1.243927   .5693604    -2.18   0.029    -2.359852   -.1280007
+    hategroupscount |  -.0057217   .0035258    -1.62   0.105    -.0126322    .0011888
+ violent_crime_rate |   .0023215   .0031108     0.75   0.456    -.0037756    .0084185
+property_crime_rate |   .0009495    .000748     1.27   0.204    -.0005165    .0024155
+            log_pop |   1.190183   .0704086    16.90   0.000     1.052185    1.328181
+                    |
+              month |
+           January  |  -1.182397   .1682995    -7.03   0.000    -1.512258   -.8525362
+          February  |  -1.234613   .1688934    -7.31   0.000    -1.565638   -.9035885
+             March  |  -.5743095   .1546104    -3.71   0.000    -.8773404   -.2712786
+             April  |  -.9034826   .1539619    -5.87   0.000    -1.205242   -.6017228
+               May  |  -.8704525   .1613772    -5.39   0.000    -1.186746   -.5541589
+              June  |  -.9799053   .1643334    -5.96   0.000    -1.301993   -.6578178
+              July  |  -1.310944    .193171    -6.79   0.000    -1.689552   -.9323358
+            August  |   -1.07647   .1612731    -6.67   0.000     -1.39256   -.7603809
+         September  |  -.9767081   .1602906    -6.09   0.000    -1.290872   -.6625443
+           October  |  -.6436086   .1381556    -4.66   0.000    -.9143886   -.3728286
+          December  |  -.4547135   .1438274    -3.16   0.002      -.73661   -.1728171
+                    |
+             region |
+         Northeast  |   .7540282    .228778     3.30   0.001     .3056317    1.202425
+           Midwest  |  -.3761247   .2510183    -1.50   0.134    -.8681115    .1158621
+             South  |  -.2239792   .2094494    -1.07   0.285    -.6344925    .1865342
+                    |
+              _cons |   -17.7651   .9631143   -18.45   0.000    -19.65277   -15.87744
+--------------------+----------------------------------------------------------------
+           /lnalpha |   .3194192   .2068592                     -.0860173    .7248558
+--------------------+----------------------------------------------------------------
+              alpha |   1.376328   .2847062                      .9175783    2.064433
+-------------------------------------------------------------------------------------
+
+. estimates store nb_population_clinton
+
+. 
+. coefplot (nb_baseline_trump, color(red) ciopts(lcolor(red)) keep(trumprallyoccured) eform label("Trump Effect (Baseline)")) (nb_baseline_clint
+> on, color(blue) ciopts(lcolor(blue)) keep(clintonrallyoccured) eform label("Clinton Effect (Baseline)")) (nb_population_trump, color(red) ciop
+> ts(lcolor(red)) keep(trumprallyoccured) eform label("Trump Effect (Pop. Control)")) (nb_population_clinton, color(blue) ciopts(lcolor(blue)) k
+> eep(clintonrallyoccured) eform label("Clinton Effect (Pop. Control)")), vertical omitted scheme(sj) xlabel(, nolabels notick) graphregion(colo
+> r(white)) ytitle("Effect Size") title("Rally Effects in the Four Models") ylabel(1 "0%" 2 "100%" 3 "200%" 4 "300%" 5 "400%" 6 "500%" 7 "600%",
+>  angle(horizontal))
+
+. graph export "Figures/Rally_Effects.png", width(1024) height(768) replace
+(file Figures/Rally_Effects.png written in PNG format)
+
+. 
+. est table nb_*, stats(r2_p ll N) b(%9.4f) se(%9.4f) varlabel keep(trumprallyoccured clintonrallyoccured) modelwidth(18)
+
+--------------------------------------------------------------------------------------------------------------
+                Variable | nb_baseline_trump    nb_baseline_clin~n   nb_population_tr~p   nb_population_cl~n  
+-------------------------+------------------------------------------------------------------------------------
+             Trump Rally |             1.1152                                    0.1772                       
+                         |             0.1759                                    0.1328                       
+           Clinton Rally |                                  1.2128                                    0.1608  
+                         |                                  0.3700                                    0.2246  
+-------------------------+------------------------------------------------------------------------------------
+                    r2_p |             0.3203               0.3130               0.4152               0.4149  
+                      ll |          -2.92e+03            -2.95e+03            -2.51e+03            -2.51e+03  
+                       N |              37668                37668                37668                37668  
+--------------------------------------------------------------------------------------------------------------
+                                                                                                  legend: b/se
+
+. 
+. esttab nb_* using "Tables/Rally_Effects_Replication.tex", cells(b(star fmt(%9.4f)) se(par fmt(%9.4f))) ///
+> noomitted nobaselevels order(trumprallyoccured clintonrallyoccured log_pop jewishpopshare hategroupscount violent_crime_rate property_crime_ra
+> te gop2012share collegeshare *.region *.month) stats(r2_p ll N, fmt(%9.4f %9.2f %9.0g) labels("Pseudo R-squared" "Log Likelihood" "Observation
+> s")) legend label ///
+> style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Replication of Base Specification - Trump and Clinton
+>  Rally Effects") replace
+(output written to Tables/Rally_Effects_Replication.tex)
+
+. 
+. estimates clear
+
+. 
+. * Fitted Value in Original Paper
+. gen incident_hat_feinberg = 1.182 * trumprallyoccured + 0.0002 * 100000 * jewishpopshare + 0.021 * hategroupscount + 0.009 * violent_crime_rat
+> e - 0.002 * property_crime_rate - 0.047 * 100 * gop2012share + 0.052 * 100 * collegeshare + 0.589 * (region == 1) - 0.410 * (region == 2) - 0.
+> 634 * (region == 3) - 0.940 * (month == 1) - 0.992 * (month == 2) - 0.388 * (month == 3) - 0.722 * (month == 4) - 0.755 * (month == 5) -0.745 
+> * (month == 6) - 1.182 * (month == 7) -0.947 * (month == 8) - 0.931 * (month == 9) - 0.684 * (month == 10) - 0.442 * (month == 12) - 3.137 
+(36 missing values generated)
+
+. 
+. correlate incident_hat_feinberg incident_hat
+(obs=37,668)
+
+             | incide~g incid~at
+-------------+------------------
+incident_h~g |   1.0000
+incident_hat |   0.9732   1.0000
+
+
+. 
+. *******************************************************************************
+. * (3) Regression Analysis - FBI Hate Crimes
+. *******************************************************************************
+. 
+. * Negative Binomial Regressions
+. nbreg hate_crimes trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11).mon
+> th ib(4).region, dispersion(mean) vce(cluster fips)
+
+Fitting Poisson model:
+
+Iteration 0:   log pseudolikelihood = -192340.73  (not concave)
+Iteration 1:   log pseudolikelihood = -161569.22  
+Iteration 2:   log pseudolikelihood = -135973.75  (backed up)
+Iteration 3:   log pseudolikelihood = -102303.15  (backed up)
+Iteration 4:   log pseudolikelihood = -60452.757  (backed up)
+Iteration 5:   log pseudolikelihood = -43468.631  (backed up)
+Iteration 6:   log pseudolikelihood = -25630.648  
+Iteration 7:   log pseudolikelihood = -15562.874  
+Iteration 8:   log pseudolikelihood = -14821.104  
+Iteration 9:   log pseudolikelihood = -14793.105  
+Iteration 10:  log pseudolikelihood = -14793.047  
+Iteration 11:  log pseudolikelihood = -14793.047  
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood = -17950.879  (not concave)
+Iteration 1:   log pseudolikelihood = -13512.388  
+Iteration 2:   log pseudolikelihood = -13422.758  
+Iteration 3:   log pseudolikelihood = -13422.757  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -12491.565  (not concave)
+Iteration 1:   log pseudolikelihood = -11482.721  
+Iteration 2:   log pseudolikelihood =  -11093.63  
+Iteration 3:   log pseudolikelihood = -10829.341  
+Iteration 4:   log pseudolikelihood = -10824.136  
+Iteration 5:   log pseudolikelihood = -10824.108  
+Iteration 6:   log pseudolikelihood = -10824.108  
+
+Negative binomial regression                    Number of obs     =     37,668
+                                                Wald chi2(21)     =     999.80
+Dispersion           = mean                     Prob > chi2       =     0.0000
+Log pseudolikelihood = -10824.108               Pseudo R2         =     0.1936
+
+                                      (Std. Err. adjusted for 3,139 clusters in fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+        hate_crimes |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+  trumprallyoccured |   1.016791   .1891203     5.38   0.000     .6461216     1.38746
+       collegeshare |   7.284437   .5624696    12.95   0.000     6.182017    8.386857
+     jewishpopshare |   19.01523   4.846979     3.92   0.000     9.515324    28.51513
+       gop2012share |  -2.869327   .4677214    -6.13   0.000    -3.786044    -1.95261
+    hategroupscount |   .0185715   .0027324     6.80   0.000     .0132161     .023927
+ violent_crime_rate |   .0040155   .0032155     1.25   0.212    -.0022868    .0103178
+property_crime_rate |   .0027921    .000921     3.03   0.002     .0009869    .0045974
+                    |
+              month |
+           January  |  -.2977928   .1129205    -2.64   0.008    -.5191129   -.0764727
+          February  |  -.4238613   .0947375    -4.47   0.000    -.6095433   -.2381793
+             March  |  -.2141322   .0879277    -2.44   0.015    -.3864673   -.0417971
+             April  |  -.2425702   .0835576    -2.90   0.004    -.4063401   -.0788003
+               May  |  -.2073916   .0837628    -2.48   0.013    -.3715637   -.0432196
+              June  |  -.1919903   .0818547    -2.35   0.019    -.3524225    -.031558
+              July  |  -.0054562   .0817971    -0.07   0.947    -.1657756    .1548631
+            August  |   -.095964   .0819652    -1.17   0.242    -.2566129    .0646848
+         September  |   -.150112   .0876915    -1.71   0.087    -.3219842    .0217602
+           October  |  -.1244099   .0765661    -1.62   0.104    -.2744768     .025657
+          December  |  -.3794296   .0840906    -4.51   0.000    -.5442443    -.214615
+                    |
+             region |
+         Northeast  |  -.1400511   .2356702    -0.59   0.552    -.6019563    .3218541
+           Midwest  |  -.2072024   .1882595    -1.10   0.271    -.5761842    .1617794
+             South  |  -.8026521   .1692668    -4.74   0.000    -1.134409   -.4708952
+                    |
+              _cons |  -3.432689   .4344342    -7.90   0.000    -4.284164   -2.581214
+--------------------+----------------------------------------------------------------
+           /lnalpha |   1.432585   .0924648                      1.251357    1.613812
+--------------------+----------------------------------------------------------------
+              alpha |   4.189514   .3873825                      3.495083     5.02192
+-------------------------------------------------------------------------------------
+
+. estimates store nb_baseline_trump
+
+. 
+. nbreg hate_crimes clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11).m
+> onth ib(4).region, dispersion(mean) vce(cluster fips)
+
+Fitting Poisson model:
+
+Iteration 0:   log pseudolikelihood = -191848.25  (not concave)
+Iteration 1:   log pseudolikelihood =  -161280.6  (not concave)
+Iteration 2:   log pseudolikelihood = -149546.63  (not concave)
+Iteration 3:   log pseudolikelihood = -141954.59  
+Iteration 4:   log pseudolikelihood = -122681.64  (backed up)
+Iteration 5:   log pseudolikelihood = -95613.117  (backed up)
+Iteration 6:   log pseudolikelihood = -60155.078  (backed up)
+Iteration 7:   log pseudolikelihood = -20853.167  
+Iteration 8:   log pseudolikelihood = -15606.865  
+Iteration 9:   log pseudolikelihood =  -15160.05  
+Iteration 10:  log pseudolikelihood =  -15154.84  
+Iteration 11:  log pseudolikelihood = -15154.833  
+Iteration 12:  log pseudolikelihood = -15154.833  
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood = -17950.879  (not concave)
+Iteration 1:   log pseudolikelihood = -13512.388  
+Iteration 2:   log pseudolikelihood = -13422.758  
+Iteration 3:   log pseudolikelihood = -13422.757  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -12505.423  (not concave)
+Iteration 1:   log pseudolikelihood = -11532.495  
+Iteration 2:   log pseudolikelihood = -11103.799  
+Iteration 3:   log pseudolikelihood = -10894.542  
+Iteration 4:   log pseudolikelihood = -10890.916  
+Iteration 5:   log pseudolikelihood = -10890.899  
+Iteration 6:   log pseudolikelihood = -10890.899  
+
+Negative binomial regression                    Number of obs     =     37,668
+                                                Wald chi2(21)     =     956.72
+Dispersion           = mean                     Prob > chi2       =     0.0000
+Log pseudolikelihood = -10890.899               Pseudo R2         =     0.1886
+
+                                      (Std. Err. adjusted for 3,139 clusters in fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+        hate_crimes |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+clintonrallyoccured |   1.383282   .2935175     4.71   0.000     .8079982    1.958566
+       collegeshare |   7.906271   .5487455    14.41   0.000     6.830749    8.981792
+     jewishpopshare |    19.6195   5.023162     3.91   0.000     9.774284    29.46472
+       gop2012share |  -2.743746   .4458325    -6.15   0.000    -3.617561    -1.86993
+    hategroupscount |   .0175994   .0028753     6.12   0.000     .0119638    .0232349
+ violent_crime_rate |   .0038253   .0030104     1.27   0.204    -.0020749    .0097256
+property_crime_rate |   .0034826   .0008727     3.99   0.000     .0017721    .0051931
+                    |
+              month |
+           January  |  -.3907569   .1096296    -3.56   0.000     -.605627   -.1758868
+          February  |  -.5053733   .0942955    -5.36   0.000    -.6901891   -.3205575
+             March  |  -.2324028   .0935879    -2.48   0.013    -.4158317   -.0489739
+             April  |  -.2237326   .0890224    -2.51   0.012    -.3982132   -.0492519
+               May  |  -.1748814   .0905255    -1.93   0.053    -.3523082    .0025453
+              June  |  -.1521613   .0908319    -1.68   0.094    -.3301886     .025866
+              July  |   .0265752   .0911987     0.29   0.771     -.152171    .2053215
+            August  |  -.0640768   .0853477    -0.75   0.453    -.2313552    .1032016
+         September  |  -.1350349   .0955525    -1.41   0.158    -.3223144    .0522446
+           October  |   -.101049   .0776503    -1.30   0.193    -.2532408    .0511428
+          December  |  -.3797201   .0886662    -4.28   0.000    -.5535027   -.2059375
+                    |
+             region |
+         Northeast  |  -.1419588    .253328    -0.56   0.575    -.6384726    .3545549
+           Midwest  |  -.2479792   .1998259    -1.24   0.215    -.6396308    .1436725
+             South  |  -.8424303   .1838457    -4.58   0.000    -1.202761   -.4820995
+                    |
+              _cons |  -3.664595    .427725    -8.57   0.000    -4.502921    -2.82627
+--------------------+----------------------------------------------------------------
+           /lnalpha |   1.505796   .0990904                      1.311582     1.70001
+--------------------+----------------------------------------------------------------
+              alpha |    4.50774   .4466739                      3.712043       5.474
+-------------------------------------------------------------------------------------
+
+. estimates store nb_baseline_clinton
+
+. 
+. nbreg hate_crimes trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate log_pop ib
+> (11).month ib(4).region, dispersion(mean) vce(cluster fips)
+
+Fitting Poisson model:
+
+Iteration 0:   log pseudolikelihood = -165839.17  (not concave)
+Iteration 1:   log pseudolikelihood =  -139313.6  (not concave)
+Iteration 2:   log pseudolikelihood = -128229.19  (not concave)
+Iteration 3:   log pseudolikelihood =  -120790.3  (not concave)
+Iteration 4:   log pseudolikelihood = -115887.32  
+Iteration 5:   log pseudolikelihood = -94272.658  (backed up)
+Iteration 6:   log pseudolikelihood = -70321.658  (backed up)
+Iteration 7:   log pseudolikelihood = -44693.282  
+Iteration 8:   log pseudolikelihood = -36162.712  
+Iteration 9:   log pseudolikelihood = -12418.873  
+Iteration 10:  log pseudolikelihood = -11262.175  
+Iteration 11:  log pseudolikelihood = -10177.778  
+Iteration 12:  log pseudolikelihood = -10170.234  
+Iteration 13:  log pseudolikelihood = -10170.146  
+Iteration 14:  log pseudolikelihood = -10170.146  
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood = -17950.879  (not concave)
+Iteration 1:   log pseudolikelihood = -13512.388  
+Iteration 2:   log pseudolikelihood = -13422.758  
+Iteration 3:   log pseudolikelihood = -13422.757  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood =  -12487.87  (not concave)
+Iteration 1:   log pseudolikelihood = -11053.681  
+Iteration 2:   log pseudolikelihood = -10622.009  (not concave)
+Iteration 3:   log pseudolikelihood = -9716.5213  
+Iteration 4:   log pseudolikelihood = -9608.1797  
+Iteration 5:   log pseudolikelihood = -9361.2702  
+Iteration 6:   log pseudolikelihood = -9349.6771  
+Iteration 7:   log pseudolikelihood = -9349.5421  
+Iteration 8:   log pseudolikelihood = -9349.5421  
+
+Negative binomial regression                    Number of obs     =     37,668
+                                                Wald chi2(22)     =    2477.70
+Dispersion           = mean                     Prob > chi2       =     0.0000
+Log pseudolikelihood = -9349.5421               Pseudo R2         =     0.3035
+
+                                      (Std. Err. adjusted for 3,139 clusters in fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+        hate_crimes |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+  trumprallyoccured |   -.044048   .1078852    -0.41   0.683    -.2554992    .1674032
+       collegeshare |   2.107691   .4112972     5.12   0.000     1.301563    2.913819
+     jewishpopshare |   .5125393   1.372704     0.37   0.709     -2.17791    3.202989
+       gop2012share |  -1.163302   .3199049    -3.64   0.000    -1.790304   -.5362999
+    hategroupscount |  -.0060553    .001931    -3.14   0.002    -.0098399   -.0022706
+ violent_crime_rate |   .0016684   .0015258     1.09   0.274    -.0013222     .004659
+property_crime_rate |   .0009134   .0003222     2.83   0.005     .0002819     .001545
+            log_pop |   1.068824   .0349011    30.62   0.000     1.000419    1.137229
+                    |
+              month |
+           January  |  -.6190762   .0971331    -6.37   0.000    -.8094535   -.4286989
+          February  |  -.6260837   .0882533    -7.09   0.000     -.799057   -.4531104
+             March  |  -.3938114   .0818509    -4.81   0.000    -.5542362   -.2333865
+             April  |   -.375344   .0769148    -4.88   0.000    -.5260941   -.2245939
+               May  |  -.3527536   .0761754    -4.63   0.000    -.5020546   -.2034527
+              June  |  -.3106257   .0762345    -4.07   0.000    -.4600426   -.1612089
+              July  |  -.1004853   .0754722    -1.33   0.183     -.248408    .0474374
+            August  |  -.1958358     .07638    -2.56   0.010    -.3455378   -.0461339
+         September  |    -.20887   .0793309    -2.63   0.008    -.3643557   -.0533844
+           October  |  -.1594932   .0695107    -2.29   0.022    -.2957317   -.0232547
+          December  |  -.3992207   .0798672    -5.00   0.000    -.5557575   -.2426839
+                    |
+             region |
+         Northeast  |  -.0815627   .1305627    -0.62   0.532    -.3374608    .1743354
+           Midwest  |  -.0576052   .1277731    -0.45   0.652    -.3080359    .1928254
+             South  |  -.5076757   .1128943    -4.50   0.000    -.7289445   -.2864069
+                    |
+              _cons |  -14.01465   .4861258   -28.83   0.000    -14.96744   -13.06186
+--------------------+----------------------------------------------------------------
+           /lnalpha |   .1309554   .1188776                     -.1020404    .3639513
+--------------------+----------------------------------------------------------------
+              alpha |   1.139917   .1355106                       .902993    1.439004
+-------------------------------------------------------------------------------------
+
+. estimates store nb_population_trump
+
+. 
+. nbreg hate_crimes clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate log_pop 
+> ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
+
+Fitting Poisson model:
+
+Iteration 0:   log pseudolikelihood = -163048.41  (not concave)
+Iteration 1:   log pseudolikelihood = -137186.32  (not concave)
+Iteration 2:   log pseudolikelihood =  -127726.9  (not concave)
+Iteration 3:   log pseudolikelihood = -121223.57  
+Iteration 4:   log pseudolikelihood = -96173.759  (backed up)
+Iteration 5:   log pseudolikelihood = -74802.803  (backed up)
+Iteration 6:   log pseudolikelihood = -54728.463  
+Iteration 7:   log pseudolikelihood = -48638.545  
+Iteration 8:   log pseudolikelihood = -13328.687  
+Iteration 9:   log pseudolikelihood =   -12766.9  
+Iteration 10:  log pseudolikelihood = -10196.131  
+Iteration 11:  log pseudolikelihood = -10165.253  
+Iteration 12:  log pseudolikelihood =  -10165.12  
+Iteration 13:  log pseudolikelihood =  -10165.12  
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood = -17950.879  (not concave)
+Iteration 1:   log pseudolikelihood = -13512.388  
+Iteration 2:   log pseudolikelihood = -13422.758  
+Iteration 3:   log pseudolikelihood = -13422.757  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -12486.306  (not concave)
+Iteration 1:   log pseudolikelihood = -11016.016  
+Iteration 2:   log pseudolikelihood = -10226.701  (not concave)
+Iteration 3:   log pseudolikelihood = -9619.4042  
+Iteration 4:   log pseudolikelihood = -9579.8752  
+Iteration 5:   log pseudolikelihood = -9369.3824  
+Iteration 6:   log pseudolikelihood = -9349.8892  
+Iteration 7:   log pseudolikelihood = -9349.6792  
+Iteration 8:   log pseudolikelihood =  -9349.679  
+
+Negative binomial regression                    Number of obs     =     37,668
+                                                Wald chi2(22)     =    2611.37
+Dispersion           = mean                     Prob > chi2       =     0.0000
+Log pseudolikelihood =  -9349.679               Pseudo R2         =     0.3034
+
+                                      (Std. Err. adjusted for 3,139 clusters in fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+        hate_crimes |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+clintonrallyoccured |   .0724031   .2180822     0.33   0.740    -.3550303    .4998364
+       collegeshare |   2.113444   .4139703     5.11   0.000     1.302078    2.924811
+     jewishpopshare |   .5763892   1.373874     0.42   0.675    -2.116354    3.269132
+       gop2012share |  -1.167264   .3215198    -3.63   0.000    -1.797431   -.5370963
+    hategroupscount |  -.0059447   .0018854    -3.15   0.002    -.0096401   -.0022493
+ violent_crime_rate |   .0016857   .0015348     1.10   0.272    -.0013224    .0046938
+property_crime_rate |   .0008943   .0003241     2.76   0.006     .0002591    .0015295
+            log_pop |   1.061729   .0325248    32.64   0.000     .9979819    1.125477
+                    |
+              month |
+           January  |  -.6017439   .0966365    -6.23   0.000    -.7911479   -.4123398
+          February  |  -.6100025   .0874848    -6.97   0.000    -.7814695   -.4385356
+             March  |  -.3807946   .0818675    -4.65   0.000    -.5412519   -.2203374
+             April  |  -.3645516   .0792263    -4.60   0.000    -.5198324   -.2092708
+               May  |  -.3426804   .0781715    -4.38   0.000    -.4958937   -.1894671
+              June  |  -.3008913   .0783141    -3.84   0.000    -.4543841   -.1473985
+              July  |  -.0935283   .0769263    -1.22   0.224     -.244301    .0572445
+            August  |  -.1909662     .07769    -2.46   0.014    -.3432358   -.0386965
+         September  |   -.205984   .0800484    -2.57   0.010     -.362876   -.0490919
+           October  |  -.1590458   .0696888    -2.28   0.022    -.2956333   -.0224583
+          December  |   -.400338   .0801232    -5.00   0.000    -.5573767   -.2432993
+                    |
+             region |
+         Northeast  |  -.0849036   .1296424    -0.65   0.513    -.3389981    .1691909
+           Midwest  |   -.065706    .122335    -0.54   0.591    -.3054781    .1740661
+             South  |  -.5113077   .1118997    -4.57   0.000     -.730627   -.2919883
+                    |
+              _cons |  -13.94029   .4594322   -30.34   0.000    -14.84077   -13.03982
+--------------------+----------------------------------------------------------------
+           /lnalpha |   .1302709   .1180396                     -.1010825    .3616243
+--------------------+----------------------------------------------------------------
+              alpha |   1.139137   .1344633                      .9038585    1.435659
+-------------------------------------------------------------------------------------
+
+. estimates store nb_population_clinton
+
+. 
+. coefplot (nb_baseline_trump, color(red) ciopts(lcolor(red)) keep(trumprallyoccured) eform label("Trump Effect (Baseline)")) (nb_baseline_clint
+> on, color(blue) ciopts(lcolor(blue)) keep(clintonrallyoccured) eform label("Clinton Effect (Baseline)")) (nb_population_trump, color(red) ciop
+> ts(lcolor(red)) keep(trumprallyoccured) eform label("Trump Effect (Pop. Control)")) (nb_population_clinton, color(blue) ciopts(lcolor(blue)) k
+> eep(clintonrallyoccured) eform label("Clinton Effect (Pop. Control)")), vertical omitted scheme(sj) xlabel(, nolabels notick) graphregion(colo
+> r(white)) ytitle("Effect Size") title("Rally Effects in the Four Models") ylabel(1 "0%" 2 "100%" 3 "200%" 4 "300%" 5 "400%" 6 "500%" 7 "600%",
+>  angle(horizontal))
+
+. graph export "Figures/Rally_Effects_FBI_Hate.png", width(1024) height(768) replace
+(file Figures/Rally_Effects_FBI_Hate.png written in PNG format)
+
+. 
+. esttab nb_* using "Tables/Rally_Effects_FBI_Hate_Crimes.tex", cells(b(star fmt(%9.4f)) se(par fmt(%9.4f))) ///
+> noomitted nobaselevels order(trumprallyoccured clintonrallyoccured log_pop jewishpopshare hategroupscount violent_crime_rate property_crime_ra
+> te gop2012share collegeshare *.region *.month) stats(r2_p ll N, fmt(%9.4f %9.2f %9.0g) labels("Pseudo R-squared" "Log Likelihood" "Observation
+> s")) legend label ///
+> style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Base Specification with FBI Hate Crime Data") replace
+(output written to Tables/Rally_Effects_FBI_Hate_Crimes.tex)
+
+. 
+. export delimited full_data.csv, replace
+file full_data.csv saved
+
+. 
+. estimates clear
+
+. 
+. 
+. *******************************************************************************
+. * (4) Regression Analysis - Pre-Rally Effects
+. *******************************************************************************
+. 
+. * Locations with Trump Rally, Pre-Rally
+. bysort fips (monthyear): gen trumpeverrally = trumprallyoccured[_N]
+
+. gen beforetrumprally = trumpeverrally - trumprallyoccured 
+
+. 
+. label variable beforetrumprally "Future Trump Rally"
+
+. 
+. * Locations with Clinton Rally, Pre-Rally
+. bysort fips (monthyear): gen clintoneverrally = clintonrallyoccured[_N]
+
+. gen beforeclintonrally = clintoneverrally - clintonrallyoccured 
+
+. 
+. label variable beforeclintonrally "Future Clinton Rally"
+
+. 
+. * Negative Binomial Regressions
+. nbreg incidentcount beforetrumprally collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11).mo
+> nth ib(4).region, dispersion(mean) vce(cluster fips)
+
+Fitting Poisson model:
+
+Iteration 0:   log pseudolikelihood = -110411.25  (not concave)
+Iteration 1:   log pseudolikelihood = -101578.36  (not concave)
+Iteration 2:   log pseudolikelihood = -93452.088  (not concave)
+Iteration 3:   log pseudolikelihood = -88634.894  (not concave)
+Iteration 4:   log pseudolikelihood = -87736.157  (not concave)
+Iteration 5:   log pseudolikelihood = -86772.835  (not concave)
+Iteration 6:   log pseudolikelihood =  -84578.84  (not concave)
+Iteration 7:   log pseudolikelihood = -82304.323  (not concave)
+Iteration 8:   log pseudolikelihood = -81021.216  (not concave)
+Iteration 9:   log pseudolikelihood = -79385.551  (not concave)
+Iteration 10:  log pseudolikelihood = -77303.056  
+Iteration 11:  log pseudolikelihood = -28346.584  (backed up)
+Iteration 12:  log pseudolikelihood = -23538.502  (backed up)
+Iteration 13:  log pseudolikelihood =  -14878.05  (backed up)
+Iteration 14:  log pseudolikelihood = -7218.9205  
+Iteration 15:  log pseudolikelihood =  -4612.506  
+Iteration 16:  log pseudolikelihood = -3986.1966  
+Iteration 17:  log pseudolikelihood = -3784.2856  
+Iteration 18:  log pseudolikelihood = -3783.4593  
+Iteration 19:  log pseudolikelihood = -3783.4589  
+Iteration 20:  log pseudolikelihood = -3783.4589  
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood =  -5752.871  (not concave)
+Iteration 1:   log pseudolikelihood = -4311.4051  
+Iteration 2:   log pseudolikelihood = -4290.3218  
+Iteration 3:   log pseudolikelihood = -4290.3154  
+Iteration 4:   log pseudolikelihood = -4290.3154  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -3933.4219  (not concave)
+Iteration 1:   log pseudolikelihood = -3359.1594  
+Iteration 2:   log pseudolikelihood = -2968.8139  
+Iteration 3:   log pseudolikelihood = -2944.0786  
+Iteration 4:   log pseudolikelihood = -2940.3583  
+Iteration 5:   log pseudolikelihood = -2940.3406  
+Iteration 6:   log pseudolikelihood = -2940.3406  
+
+Negative binomial regression                    Number of obs     =     37,668
+                                                Wald chi2(21)     =     926.29
+Dispersion           = mean                     Prob > chi2       =     0.0000
+Log pseudolikelihood = -2940.3406               Pseudo R2         =     0.3147
+
+                                      (Std. Err. adjusted for 3,139 clusters in fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+      incidentcount |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+   beforetrumprally |   1.056132   .2281967     4.63   0.000     .6088751     1.50339
+       collegeshare |   6.287532   .8612793     7.30   0.000     4.599456    7.975609
+     jewishpopshare |   29.86155   5.549815     5.38   0.000     18.98411    40.73898
+       gop2012share |  -4.023734   .7723617    -5.21   0.000    -5.537535   -2.509932
+    hategroupscount |   .0213476   .0051702     4.13   0.000     .0112142    .0314809
+ violent_crime_rate |   .0049976    .003725     1.34   0.180    -.0023034    .0122985
+property_crime_rate |   .0008961   .0004726     1.90   0.058    -.0000301    .0018224
+                    |
+              month |
+           January  |  -1.539159   .2128946    -7.23   0.000    -1.956425   -1.121894
+          February  |   -1.49878   .1947129    -7.70   0.000     -1.88041    -1.11715
+             March  |  -.8077788   .1746473    -4.63   0.000    -1.150081   -.4654764
+             April  |  -1.096444    .171204    -6.40   0.000    -1.431998   -.7608903
+               May  |   -1.03347   .1578045    -6.55   0.000    -1.342761   -.7241792
+              June  |  -.9795675   .1909014    -5.13   0.000    -1.353727   -.6054076
+              July  |  -1.364005   .2179226    -6.26   0.000    -1.791126   -.9368849
+            August  |  -1.139498   .1667817    -6.83   0.000    -1.466384   -.8126116
+         September  |  -1.009996   .1672437    -6.04   0.000    -1.337788   -.6822046
+           October  |  -.6893008   .1445386    -4.77   0.000    -.9725912   -.4060104
+          December  |  -.4180184   .1667604    -2.51   0.012    -.7448627   -.0911741
+                    |
+             region |
+         Northeast  |   .7749316   .2755863     2.81   0.005     .2347924    1.315071
+           Midwest  |  -.3364687   .2771398    -1.21   0.225    -.8796527    .2067153
+             South  |  -.7186163   .2844083    -2.53   0.012    -1.276046   -.1611863
+                    |
+              _cons |  -3.873235   .6942979    -5.58   0.000    -5.234034   -2.512436
+--------------------+----------------------------------------------------------------
+           /lnalpha |   1.545569   .1627575                       1.22657    1.864568
+--------------------+----------------------------------------------------------------
+              alpha |   4.690641   .7634372                      3.409516    6.453148
+-------------------------------------------------------------------------------------
+
+. estimates store nb_baseline_trump
+
+. 
+. nbreg incidentcount beforeclintonrally collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11).
+> month ib(4).region, dispersion(mean) vce(cluster fips)
+
+Fitting Poisson model:
+
+Iteration 0:   log pseudolikelihood = -110215.37  (not concave)
+Iteration 1:   log pseudolikelihood = -101398.14  (not concave)
+Iteration 2:   log pseudolikelihood = -93286.293  (not concave)
+Iteration 3:   log pseudolikelihood =   -89866.5  (not concave)
+Iteration 4:   log pseudolikelihood = -88963.205  (not concave)
+Iteration 5:   log pseudolikelihood = -86558.578  (not concave)
+Iteration 6:   log pseudolikelihood = -84758.001  (not concave)
+Iteration 7:   log pseudolikelihood = -84119.805  (not concave)
+Iteration 8:   log pseudolikelihood = -77110.908  
+Iteration 9:   log pseudolikelihood = -51764.523  (backed up)
+Iteration 10:  log pseudolikelihood = -27523.772  (backed up)
+Iteration 11:  log pseudolikelihood = -18533.721  (backed up)
+Iteration 12:  log pseudolikelihood = -13624.739  (backed up)
+Iteration 13:  log pseudolikelihood = -7994.5524  
+Iteration 14:  log pseudolikelihood = -7368.4725  
+Iteration 15:  log pseudolikelihood = -3942.7365  
+Iteration 16:  log pseudolikelihood = -3780.8058  
+Iteration 17:  log pseudolikelihood = -3771.5001  
+Iteration 18:  log pseudolikelihood = -3771.4715  
+Iteration 19:  log pseudolikelihood = -3771.4715  
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood =  -5752.871  (not concave)
+Iteration 1:   log pseudolikelihood = -4311.4051  
+Iteration 2:   log pseudolikelihood = -4290.3218  
+Iteration 3:   log pseudolikelihood = -4290.3154  
+Iteration 4:   log pseudolikelihood = -4290.3154  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -3932.1914  (not concave)
+Iteration 1:   log pseudolikelihood = -3358.8128  
+Iteration 2:   log pseudolikelihood = -2970.5396  
+Iteration 3:   log pseudolikelihood =  -2947.309  
+Iteration 4:   log pseudolikelihood = -2944.3082  
+Iteration 5:   log pseudolikelihood = -2944.2961  
+Iteration 6:   log pseudolikelihood = -2944.2961  
+
+Negative binomial regression                    Number of obs     =     37,668
+                                                Wald chi2(21)     =     874.88
+Dispersion           = mean                     Prob > chi2       =     0.0000
+Log pseudolikelihood = -2944.2961               Pseudo R2         =     0.3137
+
+                                      (Std. Err. adjusted for 3,139 clusters in fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+      incidentcount |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+ beforeclintonrally |   1.194577   .3177315     3.76   0.000     .5718345    1.817319
+       collegeshare |    6.69882   .8864715     7.56   0.000     4.961367    8.436272
+     jewishpopshare |   28.83893   5.869737     4.91   0.000     17.33446    40.34341
+       gop2012share |   -3.87157   .7891722    -4.91   0.000    -5.418319   -2.324821
+    hategroupscount |   .0219714   .0051956     4.23   0.000     .0117881    .0321546
+ violent_crime_rate |    .005066   .0039099     1.30   0.195    -.0025973    .0127294
+property_crime_rate |   .0009474   .0004723     2.01   0.045     .0000218    .0018731
+                    |
+              month |
+           January  |  -1.371655   .1865025    -7.35   0.000    -1.737193   -1.006117
+          February  |   -1.38268   .1827527    -7.57   0.000    -1.740868   -1.024491
+             March  |  -.7345334   .1599092    -4.59   0.000     -1.04795   -.4211171
+             April  |  -1.050744   .1684185    -6.24   0.000    -1.380838     -.72065
+               May  |   -.987364   .1584315    -6.23   0.000    -1.297884   -.6768439
+              June  |  -.9852812   .1879754    -5.24   0.000    -1.353706   -.6168562
+              July  |  -1.363717   .2146574    -6.35   0.000    -1.784438   -.9429959
+            August  |  -1.117797   .1646229    -6.79   0.000    -1.440452    -.795142
+         September  |  -1.005512   .1669571    -6.02   0.000    -1.332742   -.6782824
+           October  |  -.6894886    .142485    -4.84   0.000     -.968754   -.4102231
+          December  |  -.4184846   .1663359    -2.52   0.012     -.744497   -.0924722
+                    |
+             region |
+         Northeast  |   .7697855   .2744064     2.81   0.005     .2319588    1.307612
+           Midwest  |  -.3461764    .278993    -1.24   0.215    -.8929926    .2006398
+             South  |  -.7378973   .2827499    -2.61   0.009    -1.292077   -.1837177
+                    |
+              _cons |  -4.073177   .7088403    -5.75   0.000    -5.462479   -2.683876
+--------------------+----------------------------------------------------------------
+           /lnalpha |   1.551928   .1613673                      1.235654    1.868203
+--------------------+----------------------------------------------------------------
+              alpha |   4.720564   .7617449                      3.440629    6.476644
+-------------------------------------------------------------------------------------
+
+. estimates store nb_baseline_clinton
+
+. 
+. est table nb_*, stats(r2_p ll N) b(%9.4f) se(%9.4f) varlabel keep(beforetrumprally beforeclintonrally) modelwidth(18)
+
+--------------------------------------------------------------------
+                Variable | nb_baseline_trump    nb_baseline_clin~n  
+-------------------------+------------------------------------------
+      Future Trump Rally |             1.0561                       
+                         |             0.2282                       
+    Future Clinton Rally |                                  1.1946  
+                         |                                  0.3177  
+-------------------------+------------------------------------------
+                    r2_p |             0.3147               0.3137  
+                      ll |          -2.94e+03            -2.94e+03  
+                       N |              37668                37668  
+--------------------------------------------------------------------
+                                                        legend: b/se
+
+. 
+. esttab nb_* using "Tables/Future_Rally_Effects.tex", cells(b(star fmt(%9.4f)) se(par fmt(%9.4f))) ///
+> noomitted nobaselevels keep(beforetrumprally beforeclintonrally) stats(r2_p ll N, fmt(%9.4f %9.2f %9.0g) labels("Pseudo R-squared" "Log Likeli
+> hood" "Observations")) legend label ///
+> style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Falsification Test - Future Rally Effects on Past Hat
+> e Incidents") replace
+(output written to Tables/Future_Rally_Effects.tex)
+
+. 
+. estimates clear
+
+. 
+. *******************************************************************************
+. * (5) Regression Analysis - Difference in Differences
+. *******************************************************************************
+. 
+. xtset fips
+       panel variable:  fips (balanced)
+
+. 
+. * Poisson Fixed Effects Regressions
+. xtpoisson incidentcount trumprallyoccured ib(11).month, fe r
+note: 2892 groups (34704 obs) dropped because of all zero outcomes
+
+Iteration 0:   log pseudolikelihood = -1574.9234  
+Iteration 1:   log pseudolikelihood = -1491.3956  
+Iteration 2:   log pseudolikelihood = -1481.5314  
+Iteration 3:   log pseudolikelihood = -1481.5085  
+Iteration 4:   log pseudolikelihood = -1481.5085  
+
+Conditional fixed-effects Poisson regression    Number of obs     =      3,000
+Group variable: fips                            Number of groups  =        250
+
+                                                Obs per group:
+                                                              min =         12
+                                                              avg =       12.0
+                                                              max =         12
+
+                                                Wald chi2(12)     =     138.48
+Log pseudolikelihood  = -1481.5085              Prob > chi2       =     0.0000
+
+                                        (Std. Err. adjusted for clustering on fips)
+-----------------------------------------------------------------------------------
+                  |               Robust
+    incidentcount |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+trumprallyoccured |   .1968264   .1661815     1.18   0.236    -.1288834    .5225361
+                  |
+            month |
+         January  |  -.9420645   .1833572    -5.14   0.000    -1.301438    -.582691
+        February  |   -1.10352   .1558278    -7.08   0.000    -1.408937   -.7981031
+           March  |  -.4078551   .1446982    -2.82   0.005    -.6914583   -.1242518
+           April  |  -.8499681     .13912    -6.11   0.000    -1.122638   -.5772979
+             May  |  -.7853775   .1442616    -5.44   0.000    -1.068125   -.5026299
+            June  |  -.8693606   .1625398    -5.35   0.000    -1.187933   -.5507885
+            July  |  -1.262374   .1672245    -7.55   0.000    -1.590128   -.9346199
+          August  |  -.9932013   .1522751    -6.52   0.000    -1.291655   -.6947475
+       September  |  -.9880942   .1457112    -6.78   0.000    -1.273683   -.7025055
+         October  |  -.5792347   .1360314    -4.26   0.000    -.8458513   -.3126182
+        December  |  -.4416597   .1052424    -4.20   0.000    -.6479311   -.2353883
+-----------------------------------------------------------------------------------
+
+. estimates store did_hateincidents_trump
+
+. 
+. xtpoisson hate_crimes trumprallyoccured ib(11).month, fe r
+note: 2338 groups (28056 obs) dropped because of all zero outcomes
+
+Iteration 0:   log pseudolikelihood = -5679.3709  
+Iteration 1:   log pseudolikelihood = -5577.8849  
+Iteration 2:   log pseudolikelihood = -5575.5874  
+Iteration 3:   log pseudolikelihood = -5575.5864  
+Iteration 4:   log pseudolikelihood = -5575.5864  
+
+Conditional fixed-effects Poisson regression    Number of obs     =      9,648
+Group variable: fips                            Number of groups  =        804
+
+                                                Obs per group:
+                                                              min =         12
+                                                              avg =       12.0
+                                                              max =         12
+
+                                                Wald chi2(12)     =     187.83
+Log pseudolikelihood  = -5575.5864              Prob > chi2       =     0.0000
+
+                                        (Std. Err. adjusted for clustering on fips)
+-----------------------------------------------------------------------------------
+                  |               Robust
+      hate_crimes |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+trumprallyoccured |  -.1357279   .0860571    -1.58   0.115    -.3043967    .0329408
+                  |
+            month |
+         January  |  -.7314927   .0833069    -8.78   0.000    -.8947712   -.5682142
+        February  |  -.7239639   .0807555    -8.96   0.000    -.8822418    -.565686
+           March  |  -.4478748   .0699544    -6.40   0.000     -.584983   -.3107666
+           April  |  -.4560225    .058961    -7.73   0.000    -.5715839   -.3404611
+             May  |  -.4441416   .0620904    -7.15   0.000    -.5658366   -.3224467
+            June  |  -.3615508   .0615011    -5.88   0.000    -.4820908   -.2410109
+            July  |  -.2210915   .0631618    -3.50   0.000    -.3448863   -.0972967
+          August  |  -.3791903   .0618141    -6.13   0.000    -.5003436   -.2580369
+       September  |  -.3526188   .0588297    -5.99   0.000    -.4679229   -.2373147
+         October  |  -.2843149   .0576584    -4.93   0.000    -.3973232   -.1713066
+        December  |  -.4323124   .0657582    -6.57   0.000    -.5611961   -.3034286
+-----------------------------------------------------------------------------------
+
+. estimates store did_hatecrimes_trump
+
+. 
+. xtpoisson incidentcount clintonrallyoccured ib(11).month, fe r
+note: 2892 groups (34704 obs) dropped because of all zero outcomes
+
+Iteration 0:   log pseudolikelihood = -1574.9234  
+Iteration 1:   log pseudolikelihood = -1492.4722  
+Iteration 2:   log pseudolikelihood = -1482.5862  
+Iteration 3:   log pseudolikelihood = -1482.5635  
+Iteration 4:   log pseudolikelihood = -1482.5635  
+
+Conditional fixed-effects Poisson regression    Number of obs     =      3,000
+Group variable: fips                            Number of groups  =        250
+
+                                                Obs per group:
+                                                              min =         12
+                                                              avg =       12.0
+                                                              max =         12
+
+                                                Wald chi2(12)     =     150.99
+Log pseudolikelihood  = -1482.5635              Prob > chi2       =     0.0000
+
+                                          (Std. Err. adjusted for clustering on fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+      incidentcount |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+clintonrallyoccured |   .0884813   .1445843     0.61   0.541    -.1948988    .3718614
+                    |
+              month |
+           January  |  -.9939585   .1814367    -5.48   0.000    -1.349568   -.6383491
+          February  |  -1.150119   .1569149    -7.33   0.000    -1.457667   -.8425717
+             March  |  -.4429858   .1419389    -3.12   0.002    -.7211809   -.1647907
+             April  |  -.8695043   .1375808    -6.32   0.000    -1.139158    -.599851
+               May  |  -.7976786   .1451804    -5.49   0.000    -1.082227   -.5131301
+              June  |  -.8801996   .1652967    -5.32   0.000    -1.204175    -.556224
+              July  |   -1.27235    .170372    -7.47   0.000    -1.606273   -.9384275
+            August  |  -.9980577   .1557543    -6.41   0.000    -1.303331   -.6927849
+         September  |  -.9886481   .1467431    -6.74   0.000    -1.276259   -.7010369
+           October  |  -.5801503   .1361648    -4.26   0.000    -.8470284   -.3132722
+          December  |  -.4413434     .10525    -4.19   0.000    -.6476296   -.2350572
+-------------------------------------------------------------------------------------
+
+. estimates store did_hateincidents_clinton
+
+. 
+. xtpoisson hate_crimes clintonrallyoccured ib(11).month, fe r
+note: 2338 groups (28056 obs) dropped because of all zero outcomes
+
+Iteration 0:   log pseudolikelihood = -5679.3709  
+Iteration 1:   log pseudolikelihood = -5580.2624  
+Iteration 2:   log pseudolikelihood = -5577.9909  
+Iteration 3:   log pseudolikelihood = -5577.9899  
+Iteration 4:   log pseudolikelihood = -5577.9899  
+
+Conditional fixed-effects Poisson regression    Number of obs     =      9,648
+Group variable: fips                            Number of groups  =        804
+
+                                                Obs per group:
+                                                              min =         12
+                                                              avg =       12.0
+                                                              max =         12
+
+                                                Wald chi2(12)     =     183.04
+Log pseudolikelihood  = -5577.9899              Prob > chi2       =     0.0000
+
+                                          (Std. Err. adjusted for clustering on fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+        hate_crimes |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+clintonrallyoccured |   .0129766   .0967832     0.13   0.893    -.1767151    .2026682
+                    |
+              month |
+           January  |  -.6873496    .083724    -8.21   0.000    -.8514456   -.5232536
+          February  |  -.6820865   .0737917    -9.24   0.000    -.8267156   -.5374574
+             March  |  -.4203281    .065898    -6.38   0.000    -.5494858   -.2911703
+             April  |  -.4345704   .0578705    -7.51   0.000    -.5479944   -.3211464
+               May  |  -.4284417   .0617749    -6.94   0.000    -.5495184    -.307365
+              June  |  -.3482423    .061934    -5.62   0.000    -.4696308   -.2268539
+              July  |  -.2119902    .061977    -3.42   0.001    -.3334628   -.0905176
+            August  |  -.3738843   .0604128    -6.19   0.000    -.4922913   -.2554774
+         September  |  -.3493779   .0585731    -5.96   0.000    -.4641791   -.2345767
+           October  |  -.2823994   .0565582    -4.99   0.000    -.3932514   -.1715473
+          December  |  -.4323124   .0657582    -6.57   0.000    -.5611961   -.3034286
+-------------------------------------------------------------------------------------
+
+. estimates store did_hatecrimes_clinton
+
+. 
+. est table did_*, stats(ll N) b(%9.4f) se(%9.4f) varlabel keep(trumprallyoccured clintonrallyoccured) modelwidth(18)
+
+--------------------------------------------------------------------------------------------------------------
+                Variable | did_hateincident~p   did_hatecrimes_t~p   did_hateincident~n   did_hatecrimes_c~n  
+-------------------------+------------------------------------------------------------------------------------
+             Trump Rally |             0.1968                                                                 
+                         |             0.1662                                                                 
+           Clinton Rally |                                                       0.0885                       
+                         |                                                       0.1446                       
+-------------------------+------------------------------------------------------------------------------------
+                      ll |          -1.48e+03            -5.58e+03            -1.48e+03            -5.58e+03  
+                       N |               3000                 9648                 3000                 9648  
+--------------------------------------------------------------------------------------------------------------
+                                                                                                  legend: b/se
+
+. 
+. esttab did_* using "Tables/Rally_Effects_DiD.tex", cells(b(star fmt(%9.4f)) se(par fmt(%9.4f))) ///
+> noomitted nobaselevels keep(trumprallyoccured clintonrallyoccured) indicate("Month FE = *.month") stats(ll N, fmt(%9.2f %9.0g) labels("Log Lik
+> elihood" "Observations")) legend label ///
+> style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Difference in Differences Estimates") replace
+(output written to Tables/Rally_Effects_DiD.tex)
+
+. 
+. export delimited full_data.csv, replace
+file full_data.csv saved
+
+. 
+. estimates clear
+
+. 
+. 
+. *******************************************************************************
+. * (6) End of file
+. *******************************************************************************
+. 
+. log close
+      name:  <unnamed>
+       log:  C:\Users\mlilley\Dropbox\Trump Rallies\Log Files/Trump_rallies_analysis.log
+  log type:  text
+ closed on:  10 Sep 2019, 00:48:10
+------------------------------------------------------------------------------------------------------------------------------------------------

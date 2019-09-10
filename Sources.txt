@@ -1,0 +1,38 @@
+Data sources:
+
+Initial paper: 
+http://lmas.unt.edu/sites/lmas.unt.edu/files/lmas/Hate%20Incidents%20Spike_0.pdf
+
+Trump rallies (list used in initial paper):
+https://en.wikipedia.org/wiki/List_of_rallies_for_the_2016_Donald_Trump_presidential_campaign
+
+Clinton rallies:
+https://docs.google.com/spreadsheets/d/14Lxw0vc4YBUwQ8cZouyewZvOGg6PyzS2mArWNe3iJcY/edit#gid=0
+
+Hate incidents: 
+https://www.adl.org/education-and-resources/resource-knowledge-base/adl-heat-map
+
+Jewish population:
+https://www.jewishdatabank.org/databank/search-results/study/602
+https://www.jewishdatabank.org/content/upload/bjdb/602/N-JewishMapUS_2011_Methodology.pdf
+
+Hate groups:
+https://www.splcenter.org/hate-map?year=2016
+
+College attainment:
+https://data2.nhgis.org/main (from IPUMS NHGIS). Series B15003. Educational Attainment for the Population 25 Years and Over
+
+2015 Violent Crime and Property Crime Data:
+https://www.openicpsr.org/openicpsr/project/108164/version/V1/view
+
+2012 county-level Presidential Election Returns:
+https://uselectionatlas.org/
+
+
+Statistics in article:
+
+Ideology in academia:
+https://www.insidehighered.com/news/2016/07/05/new-analysis-new-england-colleges-responsible-left-leaning-professoriate
+
+Ideology amongst journalists:
+https://www.politico.com/blogs/media/2014/05/survey-7-percent-of-reporters-identify-as-republican-188053
