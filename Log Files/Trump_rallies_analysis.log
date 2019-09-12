@@ -1,8 +1,8 @@
-------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  C:\Users\mlilley\Dropbox\Trump Rallies\Log Files/Trump_rallies_analysis.log
   log type:  text
- opened on:  10 Sep 2019, 00:47:03
+ opened on:  12 Sep 2019, 13:29:30
 
 . set more off
 
@@ -43,7 +43,8 @@
 
 . 
 . * 2012 Presidential Election 
-. merge 1:1 fips using Intermediate/presidential_election.dta, keep(master match) keepusing(gop2012share) nogenerate
+. merge 1:1 fips using Intermediate/presidential_election.dta, keep(master match) keepusing(gop2012share)
+>  nogenerate
 
     Result                           # of obs.
     -----------------------------------------
@@ -85,8 +86,8 @@
 . bysort fips: gen month = _n
 
 . 
-. label define month_lbl 1 "January" 2 "February"  3 "March" 4 "April" 5 "May" 6 "June" 7 "July" 8 "August" 9 "September" 10 "October" 11 "Novem
-> ber" 12 "December", add
+. label define month_lbl 1 "January" 2 "February"  3 "March" 4 "April" 5 "May" 6 "June" 7 "July" 8 "Augus
+> t" 9 "September" 10 "October" 11 "November" 12 "December", add
 
 . label values month month_lbl
 
@@ -97,7 +98,8 @@
 
 . 
 . * Trump Rallies
-. merge 1:1 fips monthyear using Intermediate/Trump_rallies.dta, keep(master match) keepusing(rallycount) nogenerate
+. merge 1:1 fips monthyear using Intermediate/Trump_rallies.dta, keep(master match) keepusing(rallycount)
+>  nogenerate
 
     Result                           # of obs.
     -----------------------------------------
@@ -119,7 +121,8 @@
 
 . 
 . * Clinton Rallies
-. merge 1:1 fips monthyear using Intermediate/Clinton_rallies.dta, keep(master match) keepusing(rallycount) nogenerate
+. merge 1:1 fips monthyear using Intermediate/Clinton_rallies.dta, keep(master match) keepusing(rallycoun
+> t) nogenerate
 
     Result                           # of obs.
     -----------------------------------------
@@ -141,7 +144,8 @@
 
 . 
 . * ADL Hate Incidents
-. merge 1:1 fips monthyear using Intermediate/hate_incidents.dta, keep(master match) keepusing(incidentcount) nogenerate
+. merge 1:1 fips monthyear using Intermediate/hate_incidents.dta, keep(master match) keepusing(incidentco
+> unt) nogenerate
 
     Result                           # of obs.
     -----------------------------------------
@@ -161,7 +165,8 @@
 
 . 
 . * FBI Hate Crimes
-. merge 1:1 fips monthyear using Intermediate/hate_crimes.dta, keep(master match) keepusing(hate_crimes) nogenerate
+. merge 1:1 fips monthyear using Intermediate/hate_crimes.dta, keep(master match) keepusing(hate_crimes) 
+> nogenerate
 
     Result                           # of obs.
     -----------------------------------------
@@ -187,7 +192,8 @@
 . local NYC_pop = r(mean) * r(N) 
 
 . // Initially apply entire NYC data for month to all NYC counties
-. bysort NYCcounty monthyear (NotManhattan hate_crimes): replace hate_crimes = hate_crimes[_n-1] if NYCcounty == 1 & _n != 1
+. bysort NYCcounty monthyear (NotManhattan hate_crimes): replace hate_crimes = hate_crimes[_n-1] if NYCco
+> unty == 1 & _n != 1
 (48 real changes made)
 
 . // Population weight
@@ -203,7 +209,8 @@
 
 . 
 . * Crime
-. merge m:1 fips using Intermediate/crime_data.dta, keep(master match) keepusing(violent_crime_rate property_crime_rate) nogenerate
+. merge m:1 fips using Intermediate/crime_data.dta, keep(master match) keepusing(violent_crime_rate prope
+> rty_crime_rate) nogenerate
 
     Result                           # of obs.
     -----------------------------------------
@@ -251,7 +258,8 @@ property_c~e |         12    152.6548           0   152.6548   152.6548
 
 . 
 . * Census Regions
-. merge m:1 state_fips using Intermediate/census_regions.dta, keep(master match) keepusing(region division) nogenerate
+. merge m:1 state_fips using Intermediate/census_regions.dta, keep(master match) keepusing(region divisio
+> n) nogenerate
 
     Result                           # of obs.
     -----------------------------------------
@@ -274,13 +282,33 @@ property_c~e |         12    152.6548           0   152.6548   152.6548
 . label variable clintonrallyoccured "Clinton Rally"
 
 . 
+. * Taco Bell Locations
+. merge m:1 fips using Intermediate/Taco_Bell_Locations, keep(master match) keepusing(taco_bell_locations
+> ) nogenerate
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        18,324
+        from master                    18,324  
+        from using                          0  
+
+    matched                            19,380  
+    -----------------------------------------
+
+. replace taco_bell_locations = 0 if taco_bell_locations == .
+(18,324 real changes made)
+
+. 
+. label variable taco_bell_locations "Restaurants"
+
+. 
 . *******************************************************************************
 . * (2) Regression Analysis
 . *******************************************************************************
 . 
 . * Negative Binomial Regressions
-. nbreg incidentcount trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11).m
-> onth ib(4).region, dispersion(mean) vce(cluster fips)
+. nbreg incidentcount trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_
+> crime_rate property_crime_rate ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
 
 Fitting Poisson model:
 
@@ -373,8 +401,8 @@ property_crime_rate |   .0007122   .0004462     1.60   0.110    -.0001623    .00
 (36 missing values generated)
 
 . 
-. nbreg incidentcount clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11)
-> .month ib(4).region, dispersion(mean) vce(cluster fips)
+. nbreg incidentcount clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violen
+> t_crime_rate property_crime_rate ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
 
 Fitting Poisson model:
 
@@ -468,8 +496,8 @@ property_crime_rate |   .0009642   .0004673     2.06   0.039     .0000483      .
 . label variable log_pop "Population (Log)"
 
 . 
-. nbreg incidentcount trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate log_pop 
-> ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
+. nbreg incidentcount trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_
+> crime_rate property_crime_rate log_pop ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
 
 Fitting Poisson model:
 
@@ -556,8 +584,8 @@ property_crime_rate |   .0008169   .0008083     1.01   0.312    -.0007672    .00
 . estimates store nb_population_trump
 
 . 
-. nbreg incidentcount clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate log_po
-> p ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
+. nbreg incidentcount clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violen
+> t_crime_rate property_crime_rate log_pop ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
 
 Fitting Poisson model:
 
@@ -650,40 +678,59 @@ property_crime_rate |   .0009495    .000748     1.27   0.204    -.0005165    .00
 . estimates store nb_population_clinton
 
 . 
-. coefplot (nb_baseline_trump, color(red) ciopts(lcolor(red)) keep(trumprallyoccured) eform label("Trump Effect (Baseline)")) (nb_baseline_clint
-> on, color(blue) ciopts(lcolor(blue)) keep(clintonrallyoccured) eform label("Clinton Effect (Baseline)")) (nb_population_trump, color(red) ciop
-> ts(lcolor(red)) keep(trumprallyoccured) eform label("Trump Effect (Pop. Control)")) (nb_population_clinton, color(blue) ciopts(lcolor(blue)) k
-> eep(clintonrallyoccured) eform label("Clinton Effect (Pop. Control)")), vertical omitted scheme(sj) xlabel(, nolabels notick) graphregion(colo
-> r(white)) ytitle("Effect Size") title("Rally Effects in the Four Models") ylabel(1 "0%" 2 "100%" 3 "200%" 4 "300%" 5 "400%" 6 "500%" 7 "600%",
->  angle(horizontal))
+. coefplot (nb_baseline_trump, color(red) ciopts(lcolor(red)) keep(trumprallyoccured) eform label("Trump 
+> Effect (Baseline)")) (nb_baseline_clinton, color(blue) ciopts(lcolor(blue)) keep(clintonrallyoccured) e
+> form label("Clinton Effect (Baseline)")) (nb_population_trump, color(red) ciopts(lcolor(red)) keep(trum
+> prallyoccured) eform label("Trump Effect (Pop. Control)")) (nb_population_clinton, color(blue) ciopts(l
+> color(blue)) keep(clintonrallyoccured) eform label("Clinton Effect (Pop. Control)")), vertical omitted 
+> scheme(sj) xlabel(, nolabels notick) graphregion(color(white)) ytitle("Effect Size") title("Rally Effec
+> ts in the Four Models") ylabel(1 "0%" 2 "100%" 3 "200%" 4 "300%" 5 "400%" 6 "500%" 7 "600%", angle(hori
+> zontal))
 
 . graph export "Figures/Rally_Effects.png", width(1024) height(768) replace
 (file Figures/Rally_Effects.png written in PNG format)
 
 . 
-. est table nb_*, stats(r2_p ll N) b(%9.4f) se(%9.4f) varlabel keep(trumprallyoccured clintonrallyoccured) modelwidth(18)
+. est table nb_*, stats(r2_p ll N) b(%9.4f) se(%9.4f) varlabel keep(trumprallyoccured clintonrallyoccured
+> ) modelwidth(18)
 
---------------------------------------------------------------------------------------------------------------
-                Variable | nb_baseline_trump    nb_baseline_clin~n   nb_population_tr~p   nb_population_cl~n  
--------------------------+------------------------------------------------------------------------------------
-             Trump Rally |             1.1152                                    0.1772                       
-                         |             0.1759                                    0.1328                       
-           Clinton Rally |                                  1.2128                                    0.1608  
-                         |                                  0.3700                                    0.2246  
--------------------------+------------------------------------------------------------------------------------
-                    r2_p |             0.3203               0.3130               0.4152               0.4149  
-                      ll |          -2.92e+03            -2.95e+03            -2.51e+03            -2.51e+03  
-                       N |              37668                37668                37668                37668  
---------------------------------------------------------------------------------------------------------------
-                                                                                                  legend: b/se
+-----------------------------------------------------------------------------------------
+                Variable | nb_baseline_trump    nb_baseline_clin~n   nb_population_tr~p  
+-------------------------+---------------------------------------------------------------
+             Trump Rally |             1.1152                                    0.1772  
+                         |             0.1759                                    0.1328  
+           Clinton Rally |                                  1.2128                       
+                         |                                  0.3700                       
+-------------------------+---------------------------------------------------------------
+                    r2_p |             0.3203               0.3130               0.4152  
+                      ll |          -2.92e+03            -2.95e+03            -2.51e+03  
+                       N |              37668                37668                37668  
+-----------------------------------------------------------------------------------------
+                                                                             legend: b/se
+
+
+-----------------------------------------------
+                Variable | nb_population_cl~n  
+-------------------------+---------------------
+             Trump Rally |                     
+                         |                     
+           Clinton Rally |             0.1608  
+                         |             0.2246  
+-------------------------+---------------------
+                    r2_p |             0.4149  
+                      ll |          -2.51e+03  
+                       N |              37668  
+-----------------------------------------------
+                                   legend: b/se
 
 . 
-. esttab nb_* using "Tables/Rally_Effects_Replication.tex", cells(b(star fmt(%9.4f)) se(par fmt(%9.4f))) ///
-> noomitted nobaselevels order(trumprallyoccured clintonrallyoccured log_pop jewishpopshare hategroupscount violent_crime_rate property_crime_ra
-> te gop2012share collegeshare *.region *.month) stats(r2_p ll N, fmt(%9.4f %9.2f %9.0g) labels("Pseudo R-squared" "Log Likelihood" "Observation
-> s")) legend label ///
-> style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Replication of Base Specification - Trump and Clinton
->  Rally Effects") replace
+. esttab nb_* using "Tables/Rally_Effects_Replication.tex", cells(b(star fmt(%9.4f)) se(par fmt(%9.4f))) 
+> ///
+> noomitted nobaselevels order(trumprallyoccured clintonrallyoccured log_pop jewishpopshare hategroupscou
+> nt violent_crime_rate property_crime_rate gop2012share collegeshare *.region *.month) stats(r2_p ll N, 
+> fmt(%9.4f %9.2f %9.0g) labels("Pseudo R-squared" "Log Likelihood" "Observations")) legend label ///
+> style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Replication of
+>  Base Specification - Trump and Clinton Rally Effects") replace
 (output written to Tables/Rally_Effects_Replication.tex)
 
 . 
@@ -691,10 +738,12 @@ property_crime_rate |   .0009495    .000748     1.27   0.204    -.0005165    .00
 
 . 
 . * Fitted Value in Original Paper
-. gen incident_hat_feinberg = 1.182 * trumprallyoccured + 0.0002 * 100000 * jewishpopshare + 0.021 * hategroupscount + 0.009 * violent_crime_rat
-> e - 0.002 * property_crime_rate - 0.047 * 100 * gop2012share + 0.052 * 100 * collegeshare + 0.589 * (region == 1) - 0.410 * (region == 2) - 0.
-> 634 * (region == 3) - 0.940 * (month == 1) - 0.992 * (month == 2) - 0.388 * (month == 3) - 0.722 * (month == 4) - 0.755 * (month == 5) -0.745 
-> * (month == 6) - 1.182 * (month == 7) -0.947 * (month == 8) - 0.931 * (month == 9) - 0.684 * (month == 10) - 0.442 * (month == 12) - 3.137 
+. gen incident_hat_feinberg = 1.182 * trumprallyoccured + 0.0002 * 100000 * jewishpopshare + 0.021 * hate
+> groupscount + 0.009 * violent_crime_rate - 0.002 * property_crime_rate - 0.047 * 100 * gop2012share + 0
+> .052 * 100 * collegeshare + 0.589 * (region == 1) - 0.410 * (region == 2) - 0.634 * (region == 3) - 0.9
+> 40 * (month == 1) - 0.992 * (month == 2) - 0.388 * (month == 3) - 0.722 * (month == 4) - 0.755 * (month
+>  == 5) -0.745 * (month == 6) - 1.182 * (month == 7) -0.947 * (month == 8) - 0.931 * (month == 9) - 0.68
+> 4 * (month == 10) - 0.442 * (month == 12) - 3.137 
 (36 missing values generated)
 
 . 
@@ -713,8 +762,8 @@ incident_hat |   0.9732   1.0000
 . *******************************************************************************
 . 
 . * Negative Binomial Regressions
-. nbreg hate_crimes trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11).mon
-> th ib(4).region, dispersion(mean) vce(cluster fips)
+. nbreg hate_crimes trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_cr
+> ime_rate property_crime_rate ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
 
 Fitting Poisson model:
 
@@ -794,8 +843,8 @@ property_crime_rate |   .0027921    .000921     3.03   0.002     .0009869    .00
 . estimates store nb_baseline_trump
 
 . 
-. nbreg hate_crimes clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11).m
-> onth ib(4).region, dispersion(mean) vce(cluster fips)
+. nbreg hate_crimes clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_
+> crime_rate property_crime_rate ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
 
 Fitting Poisson model:
 
@@ -876,8 +925,8 @@ property_crime_rate |   .0034826   .0008727     3.99   0.000     .0017721    .00
 . estimates store nb_baseline_clinton
 
 . 
-. nbreg hate_crimes trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate log_pop ib
-> (11).month ib(4).region, dispersion(mean) vce(cluster fips)
+. nbreg hate_crimes trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_cr
+> ime_rate property_crime_rate log_pop ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
 
 Fitting Poisson model:
 
@@ -963,8 +1012,8 @@ property_crime_rate |   .0009134   .0003222     2.83   0.005     .0002819     .0
 . estimates store nb_population_trump
 
 . 
-. nbreg hate_crimes clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate log_pop 
-> ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
+. nbreg hate_crimes clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_
+> crime_rate property_crime_rate log_pop ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
 
 Fitting Poisson model:
 
@@ -1049,32 +1098,31 @@ property_crime_rate |   .0008943   .0003241     2.76   0.006     .0002591    .00
 . estimates store nb_population_clinton
 
 . 
-. coefplot (nb_baseline_trump, color(red) ciopts(lcolor(red)) keep(trumprallyoccured) eform label("Trump Effect (Baseline)")) (nb_baseline_clint
-> on, color(blue) ciopts(lcolor(blue)) keep(clintonrallyoccured) eform label("Clinton Effect (Baseline)")) (nb_population_trump, color(red) ciop
-> ts(lcolor(red)) keep(trumprallyoccured) eform label("Trump Effect (Pop. Control)")) (nb_population_clinton, color(blue) ciopts(lcolor(blue)) k
-> eep(clintonrallyoccured) eform label("Clinton Effect (Pop. Control)")), vertical omitted scheme(sj) xlabel(, nolabels notick) graphregion(colo
-> r(white)) ytitle("Effect Size") title("Rally Effects in the Four Models") ylabel(1 "0%" 2 "100%" 3 "200%" 4 "300%" 5 "400%" 6 "500%" 7 "600%",
->  angle(horizontal))
+. coefplot (nb_baseline_trump, color(red) ciopts(lcolor(red)) keep(trumprallyoccured) eform label("Trump 
+> Effect (Baseline)")) (nb_baseline_clinton, color(blue) ciopts(lcolor(blue)) keep(clintonrallyoccured) e
+> form label("Clinton Effect (Baseline)")) (nb_population_trump, color(red) ciopts(lcolor(red)) keep(trum
+> prallyoccured) eform label("Trump Effect (Pop. Control)")) (nb_population_clinton, color(blue) ciopts(l
+> color(blue)) keep(clintonrallyoccured) eform label("Clinton Effect (Pop. Control)")), vertical omitted 
+> scheme(sj) xlabel(, nolabels notick) graphregion(color(white)) ytitle("Effect Size") title("Rally Effec
+> ts in the Four Models") ylabel(1 "0%" 2 "100%" 3 "200%" 4 "300%" 5 "400%" 6 "500%" 7 "600%", angle(hori
+> zontal))
 
 . graph export "Figures/Rally_Effects_FBI_Hate.png", width(1024) height(768) replace
 (file Figures/Rally_Effects_FBI_Hate.png written in PNG format)
 
 . 
-. esttab nb_* using "Tables/Rally_Effects_FBI_Hate_Crimes.tex", cells(b(star fmt(%9.4f)) se(par fmt(%9.4f))) ///
-> noomitted nobaselevels order(trumprallyoccured clintonrallyoccured log_pop jewishpopshare hategroupscount violent_crime_rate property_crime_ra
-> te gop2012share collegeshare *.region *.month) stats(r2_p ll N, fmt(%9.4f %9.2f %9.0g) labels("Pseudo R-squared" "Log Likelihood" "Observation
-> s")) legend label ///
-> style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Base Specification with FBI Hate Crime Data") replace
+. esttab nb_* using "Tables/Rally_Effects_FBI_Hate_Crimes.tex", cells(b(star fmt(%9.4f)) se(par fmt(%9.4f
+> ))) ///
+> noomitted nobaselevels order(trumprallyoccured clintonrallyoccured log_pop jewishpopshare hategroupscou
+> nt violent_crime_rate property_crime_rate gop2012share collegeshare *.region *.month) stats(r2_p ll N, 
+> fmt(%9.4f %9.2f %9.0g) labels("Pseudo R-squared" "Log Likelihood" "Observations")) legend label ///
+> style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Base Specifica
+> tion with FBI Hate Crime Data") replace
 (output written to Tables/Rally_Effects_FBI_Hate_Crimes.tex)
-
-. 
-. export delimited full_data.csv, replace
-file full_data.csv saved
 
 . 
 . estimates clear
 
-. 
 . 
 . *******************************************************************************
 . * (4) Regression Analysis - Pre-Rally Effects
@@ -1099,8 +1147,8 @@ file full_data.csv saved
 
 . 
 . * Negative Binomial Regressions
-. nbreg incidentcount beforetrumprally collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11).mo
-> nth ib(4).region, dispersion(mean) vce(cluster fips)
+. nbreg incidentcount beforetrumprally collegeshare jewishpopshare gop2012share hategroupscount violent_c
+> rime_rate property_crime_rate ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
 
 Fitting Poisson model:
 
@@ -1190,8 +1238,8 @@ property_crime_rate |   .0008961   .0004726     1.90   0.058    -.0000301    .00
 . estimates store nb_baseline_trump
 
 . 
-. nbreg incidentcount beforeclintonrally collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11).
-> month ib(4).region, dispersion(mean) vce(cluster fips)
+. nbreg incidentcount beforeclintonrally collegeshare jewishpopshare gop2012share hategroupscount violent
+> _crime_rate property_crime_rate ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
 
 Fitting Poisson model:
 
@@ -1280,7 +1328,8 @@ property_crime_rate |   .0009474   .0004723     2.01   0.045     .0000218    .00
 . estimates store nb_baseline_clinton
 
 . 
-. est table nb_*, stats(r2_p ll N) b(%9.4f) se(%9.4f) varlabel keep(beforetrumprally beforeclintonrally) modelwidth(18)
+. est table nb_*, stats(r2_p ll N) b(%9.4f) se(%9.4f) varlabel keep(beforetrumprally beforeclintonrally) 
+> modelwidth(18)
 
 --------------------------------------------------------------------
                 Variable | nb_baseline_trump    nb_baseline_clin~n  
@@ -1298,10 +1347,10 @@ property_crime_rate |   .0009474   .0004723     2.01   0.045     .0000218    .00
 
 . 
 . esttab nb_* using "Tables/Future_Rally_Effects.tex", cells(b(star fmt(%9.4f)) se(par fmt(%9.4f))) ///
-> noomitted nobaselevels keep(beforetrumprally beforeclintonrally) stats(r2_p ll N, fmt(%9.4f %9.2f %9.0g) labels("Pseudo R-squared" "Log Likeli
-> hood" "Observations")) legend label ///
-> style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Falsification Test - Future Rally Effects on Past Hat
-> e Incidents") replace
+> noomitted nobaselevels keep(beforetrumprally beforeclintonrally) stats(r2_p ll N, fmt(%9.4f %9.2f %9.0g
+> ) labels("Pseudo R-squared" "Log Likelihood" "Observations")) legend label ///
+> style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Falsification 
+> Test - Future Rally Effects on Past Hate Incidents") replace
 (output written to Tables/Future_Rally_Effects.tex)
 
 . 
@@ -1309,7 +1358,295 @@ property_crime_rate |   .0009474   .0004723     2.01   0.045     .0000218    .00
 
 . 
 . *******************************************************************************
-. * (5) Regression Analysis - Difference in Differences
+. * (5) Regression Analysis - Taco Bell Effects, Population Specification
+. *******************************************************************************
+. 
+. * Scale Population Level
+. gen censuspop10_k = censuspop10 / 1000
+(24 missing values generated)
+
+. 
+. label variable censuspop10_k "Population ('000)"
+
+. 
+. * Negative Binomial Regression, No Population Control
+. nbreg taco_bell_locations trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount vi
+> olent_crime_rate property_crime_rate ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
+
+Fitting Poisson model:
+
+Iteration 0:   log pseudolikelihood = -352663.68  
+Iteration 1:   log pseudolikelihood =  -185168.3  
+Iteration 2:   log pseudolikelihood = -124654.45  
+Iteration 3:   log pseudolikelihood = -91138.203  
+Iteration 4:   log pseudolikelihood = -86129.258  
+Iteration 5:   log pseudolikelihood = -85919.239  
+Iteration 6:   log pseudolikelihood = -85918.686  
+Iteration 7:   log pseudolikelihood = -85918.686  
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood = -71806.808  
+Iteration 1:   log pseudolikelihood = -66147.732  
+Iteration 2:   log pseudolikelihood = -66085.172  
+Iteration 3:   log pseudolikelihood = -66085.164  
+Iteration 4:   log pseudolikelihood = -66085.164  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -61178.362  
+Iteration 1:   log pseudolikelihood = -56112.342  
+Iteration 2:   log pseudolikelihood =  -55519.11  
+Iteration 3:   log pseudolikelihood = -55502.314  
+Iteration 4:   log pseudolikelihood = -55502.303  
+Iteration 5:   log pseudolikelihood = -55502.303  
+
+Negative binomial regression                    Number of obs     =     37,668
+                                                Wald chi2(21)     =    1522.06
+Dispersion           = mean                     Prob > chi2       =     0.0000
+Log pseudolikelihood = -55502.303               Pseudo R2         =     0.1601
+
+                                      (Std. Err. adjusted for 3,139 clusters in fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+taco_bell_locations |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+  trumprallyoccured |   .9567219   .1159566     8.25   0.000     .7294512    1.183993
+       collegeshare |   7.015806       .371    18.91   0.000     6.288659    7.742952
+     jewishpopshare |   10.32728   3.556409     2.90   0.004     3.356846    17.29771
+       gop2012share |  -1.225003   .2424188    -5.05   0.000    -1.700135   -.7498704
+    hategroupscount |   .0233774   .0016401    14.25   0.000     .0201627     .026592
+ violent_crime_rate |   .0015418   .0019775     0.78   0.436     -.002334    .0054175
+property_crime_rate |   .0043536   .0005052     8.62   0.000     .0033635    .0053437
+                    |
+              month |
+           January  |   .1155949    .019187     6.02   0.000     .0779892    .1532007
+          February  |   .1002047   .0173765     5.77   0.000     .0661474    .1342621
+             March  |   .0730249    .010709     6.82   0.000     .0520357    .0940141
+             April  |   .0555954   .0089172     6.23   0.000     .0381181    .0730728
+               May  |   .0457251   .0078042     5.86   0.000     .0304292    .0610209
+              June  |   .0387498   .0066668     5.81   0.000     .0256831    .0518166
+              July  |   .0342442    .006174     5.55   0.000     .0221433     .046345
+            August  |   .0251865   .0052238     4.82   0.000     .0149482    .0354249
+         September  |    .016873   .0041369     4.08   0.000     .0087649    .0249812
+           October  |   .0022579   .0011844     1.91   0.057    -.0000636    .0045793
+          December  |  -.0008473   .0008498    -1.00   0.319    -.0025129    .0008183
+                    |
+             region |
+         Northeast  |  -.2860507   .1368056    -2.09   0.037    -.5541847   -.0179166
+           Midwest  |   .0330288   .1013361     0.33   0.744    -.1655863    .2316439
+             South  |  -.1327357    .097555    -1.36   0.174      -.32394    .0584686
+                    |
+              _cons |  -2.245132   .2426258    -9.25   0.000     -2.72067   -1.769594
+--------------------+----------------------------------------------------------------
+           /lnalpha |   .0437784   .0616199                     -.0769944    .1645511
+--------------------+----------------------------------------------------------------
+              alpha |   1.044751   .0643774                       .925895    1.178864
+-------------------------------------------------------------------------------------
+
+. estimates store nb_baseline_trump
+
+. 
+. * Negative Binomial Regression, Population Level Control
+. nbreg taco_bell_locations trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount vi
+> olent_crime_rate property_crime_rate censuspop10_k ib(11).month ib(4).region, dispersion(mean) vce(clus
+> ter fips) difficult
+
+Fitting Poisson model:
+
+Iteration 0:   log pseudolikelihood = -5268653.7  (not concave)
+Iteration 1:   log pseudolikelihood = -4797157.7  (not concave)
+Iteration 2:   log pseudolikelihood = -3258498.5  
+Iteration 3:   log pseudolikelihood = -2594478.7  (backed up)
+Iteration 4:   log pseudolikelihood = -2466766.5  (backed up)
+Iteration 5:   log pseudolikelihood = -1824811.8  (backed up)
+Iteration 6:   log pseudolikelihood = -1761498.8  (backed up)
+Iteration 7:   log pseudolikelihood = -751596.48  
+Iteration 8:   log pseudolikelihood = -704319.19  
+Iteration 9:   log pseudolikelihood = -88422.453  
+Iteration 10:  log pseudolikelihood = -76596.404  
+Iteration 11:  log pseudolikelihood = -74021.752  
+Iteration 12:  log pseudolikelihood = -74016.824  
+Iteration 13:  log pseudolikelihood = -74016.823  
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood = -71806.808  
+Iteration 1:   log pseudolikelihood = -66147.732  
+Iteration 2:   log pseudolikelihood = -66085.172  
+Iteration 3:   log pseudolikelihood = -66085.164  
+Iteration 4:   log pseudolikelihood = -66085.164  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -60752.699  
+Iteration 1:   log pseudolikelihood = -53772.736  
+Iteration 2:   log pseudolikelihood = -52405.224  
+Iteration 3:   log pseudolikelihood = -52305.186  
+Iteration 4:   log pseudolikelihood = -52304.784  
+Iteration 5:   log pseudolikelihood = -52304.784  
+
+Negative binomial regression                    Number of obs     =     37,668
+                                                Wald chi2(22)     =    1961.83
+Dispersion           = mean                     Prob > chi2       =     0.0000
+Log pseudolikelihood = -52304.784               Pseudo R2         =     0.2085
+
+                                      (Std. Err. adjusted for 3,139 clusters in fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+taco_bell_locations |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+  trumprallyoccured |   .3439478   .0893417     3.85   0.000     .1688412    .5190544
+       collegeshare |   4.826192   .3999499    12.07   0.000     4.042304    5.610079
+     jewishpopshare |  -11.59572   3.596101    -3.22   0.001    -18.64395   -4.547491
+       gop2012share |  -.3627776   .1957342    -1.85   0.064    -.7464096    .0208543
+    hategroupscount |    .013138    .001337     9.83   0.000     .0105175    .0157585
+ violent_crime_rate |  -.0025974   .0024558    -1.06   0.290    -.0074107    .0022159
+property_crime_rate |   .0034989    .000553     6.33   0.000      .002415    .0045829
+      censuspop10_k |   .0027104   .0004362     6.21   0.000     .0018555    .0035653
+                    |
+              month |
+           January  |    .036782   .0108686     3.38   0.001     .0154799    .0580842
+          February  |   .0317622   .0094487     3.36   0.001      .013243    .0502813
+             March  |   .0256362   .0074467     3.44   0.001     .0110409    .0402315
+             April  |   .0198911   .0058713     3.39   0.001     .0083835    .0313987
+               May  |   .0162225   .0047835     3.39   0.001      .006847     .025598
+              June  |   .0148223   .0043928     3.37   0.001     .0062125    .0234321
+              July  |   .0129316   .0038748     3.34   0.001     .0053371     .020526
+            August  |     .00952   .0029619     3.21   0.001     .0037147    .0153252
+         September  |    .006891   .0022632     3.04   0.002     .0024553    .0113267
+           October  |   .0008142   .0004841     1.68   0.093    -.0001346     .001763
+          December  |  -.0002865   .0002956    -0.97   0.332    -.0008659    .0002929
+                    |
+             region |
+         Northeast  |   .1051746   .0970892     1.08   0.279    -.0851169     .295466
+           Midwest  |   .2298737    .076304     3.01   0.003     .0803206    .3794269
+             South  |   .1365948   .0719777     1.90   0.058    -.0044788    .2776684
+                    |
+              _cons |  -2.185229   .2276287    -9.60   0.000    -2.631373   -1.739084
+--------------------+----------------------------------------------------------------
+           /lnalpha |  -.3870858   .0915125                     -.5664471   -.2077246
+--------------------+----------------------------------------------------------------
+              alpha |   .6790328     .06214                      .5675383    .8124308
+-------------------------------------------------------------------------------------
+
+. estimates store nb_pop_level_trump
+
+. 
+. * Negative Binomial Regression, Population Log Control
+. nbreg taco_bell_locations trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount vi
+> olent_crime_rate property_crime_rate log_pop ib(11).month ib(4).region, dispersion(mean) vce(cluster fi
+> ps)
+
+Fitting Poisson model:
+
+Iteration 0:   log pseudolikelihood = -172999.56  
+Iteration 1:   log pseudolikelihood = -84087.801  
+Iteration 2:   log pseudolikelihood = -52602.898  
+Iteration 3:   log pseudolikelihood = -39856.337  
+Iteration 4:   log pseudolikelihood = -38554.144  
+Iteration 5:   log pseudolikelihood = -38479.883  
+Iteration 6:   log pseudolikelihood = -38479.681  
+Iteration 7:   log pseudolikelihood = -38479.681  
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood = -71806.808  
+Iteration 1:   log pseudolikelihood = -66147.732  
+Iteration 2:   log pseudolikelihood = -66085.172  
+Iteration 3:   log pseudolikelihood = -66085.164  
+Iteration 4:   log pseudolikelihood = -66085.164  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -58819.348  (not concave)
+Iteration 1:   log pseudolikelihood = -50128.838  
+Iteration 2:   log pseudolikelihood = -42583.383  
+Iteration 3:   log pseudolikelihood = -38542.184  
+Iteration 4:   log pseudolikelihood = -38319.692  
+Iteration 5:   log pseudolikelihood = -38312.609  
+Iteration 6:   log pseudolikelihood =  -38312.59  
+Iteration 7:   log pseudolikelihood =  -38312.59  
+
+Negative binomial regression                    Number of obs     =     37,668
+                                                Wald chi2(22)     =   12253.08
+Dispersion           = mean                     Prob > chi2       =     0.0000
+Log pseudolikelihood =  -38312.59               Pseudo R2         =     0.4203
+
+                                      (Std. Err. adjusted for 3,139 clusters in fips)
+-------------------------------------------------------------------------------------
+                    |               Robust
+taco_bell_locations |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+  trumprallyoccured |   .0507159   .0350479     1.45   0.148    -.0179768    .1194085
+       collegeshare |   .2936969   .1854622     1.58   0.113    -.0698024    .6571961
+     jewishpopshare |  -5.067174    1.08214    -4.68   0.000    -7.188129   -2.946219
+       gop2012share |   .6929035   .1327077     5.22   0.000     .4328011    .9530058
+    hategroupscount |   .0013158   .0007762     1.70   0.090    -.0002056    .0028371
+ violent_crime_rate |  -.0001712   .0007396    -0.23   0.817    -.0016209    .0012784
+property_crime_rate |   .0009104   .0001816     5.01   0.000     .0005544    .0012663
+            log_pop |   1.047118   .0171925    60.91   0.000     1.013421    1.080814
+                    |
+              month |
+           January  |   .0131647   .0091612     1.44   0.151    -.0047909    .0311202
+          February  |   .0114002   .0079492     1.43   0.152    -.0041799    .0269804
+             March  |    .008796   .0061238     1.44   0.151    -.0032065    .0207985
+             April  |   .0069327   .0047951     1.45   0.148    -.0024655    .0163309
+               May  |   .0057303   .0040267     1.42   0.155    -.0021618    .0136225
+              June  |   .0047268   .0033219     1.42   0.155     -.001784    .0112376
+              July  |   .0039901   .0028102     1.42   0.156    -.0015179    .0094981
+            August  |   .0026314    .001874     1.40   0.160    -.0010417    .0063044
+         September  |   .0016365   .0011898     1.38   0.169    -.0006955    .0039686
+           October  |   .0002952   .0002778     1.06   0.288    -.0002493    .0008398
+          December  |  -.0000847   .0001041    -0.81   0.416    -.0002888    .0001193
+                    |
+             region |
+         Northeast  |  -.4946469   .0569189    -8.69   0.000    -.6062059   -.3830879
+           Midwest  |   .1752584   .0465771     3.76   0.000      .083969    .2665478
+             South  |   .0168763   .0422905     0.40   0.690    -.0660117    .0997642
+                    |
+              _cons |  -11.99604   .2076315   -57.78   0.000    -12.40299   -11.58909
+--------------------+----------------------------------------------------------------
+           /lnalpha |  -3.864165   .3516988                     -4.553482   -3.174848
+--------------------+----------------------------------------------------------------
+              alpha |   .0209804   .0073788                      .0105305    .0418005
+-------------------------------------------------------------------------------------
+
+. estimates store nb_pop_log_trump
+
+. 
+. est table nb_*, stats(r2_p ll N) b(%9.4f) se(%9.4f) varlabel keep(trumprallyoccured) modelwidth(18)
+
+-----------------------------------------------------------------------------------------
+                Variable | nb_baseline_trump    nb_pop_level_trump    nb_pop_log_trump   
+-------------------------+---------------------------------------------------------------
+             Trump Rally |             0.9567               0.3439               0.0507  
+                         |             0.1160               0.0893               0.0350  
+-------------------------+---------------------------------------------------------------
+                    r2_p |             0.1601               0.2085               0.4203  
+                      ll |          -5.55e+04            -5.23e+04            -3.83e+04  
+                       N |              37668                37668                37668  
+-----------------------------------------------------------------------------------------
+                                                                             legend: b/se
+
+. 
+. esttab nb_* using "Tables/Rally_Effects_Taco_Bell.tex", cells(b(star fmt(%9.4f)) se(par fmt(%9.4f))) //
+> /
+> noomitted nobaselevels keep(trumprallyoccured censuspop10_k log_pop) stats(r2_p ll N, fmt(%9.4f %9.2f %
+> 9.0g) labels("Pseudo R-squared" "Log Likelihood" "Observations")) legend label ///
+> style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Falsification 
+> Test - Rally Effects on Taco Bell Locations") replace
+(output written to Tables/Rally_Effects_Taco_Bell.tex)
+
+. 
+. estimates clear
+
+. 
+. // The specification using the level of population uses a different convergence 
+. // setting - standard method often gets stuck for this regression.
+. 
+. *******************************************************************************
+. * (6) Regression Analysis - Difference in Differences
 . *******************************************************************************
 . 
 . xtset fips
@@ -1493,26 +1830,42 @@ clintonrallyoccured |   .0129766   .0967832     0.13   0.893    -.1767151    .20
 . estimates store did_hatecrimes_clinton
 
 . 
-. est table did_*, stats(ll N) b(%9.4f) se(%9.4f) varlabel keep(trumprallyoccured clintonrallyoccured) modelwidth(18)
+. est table did_*, stats(ll N) b(%9.4f) se(%9.4f) varlabel keep(trumprallyoccured clintonrallyoccured) mo
+> delwidth(18)
 
---------------------------------------------------------------------------------------------------------------
-                Variable | did_hateincident~p   did_hatecrimes_t~p   did_hateincident~n   did_hatecrimes_c~n  
--------------------------+------------------------------------------------------------------------------------
-             Trump Rally |             0.1968                                                                 
-                         |             0.1662                                                                 
-           Clinton Rally |                                                       0.0885                       
-                         |                                                       0.1446                       
--------------------------+------------------------------------------------------------------------------------
-                      ll |          -1.48e+03            -5.58e+03            -1.48e+03            -5.58e+03  
-                       N |               3000                 9648                 3000                 9648  
---------------------------------------------------------------------------------------------------------------
-                                                                                                  legend: b/se
+-----------------------------------------------------------------------------------------
+                Variable | did_hateincident~p   did_hatecrimes_t~p   did_hateincident~n  
+-------------------------+---------------------------------------------------------------
+             Trump Rally |             0.1968                                            
+                         |             0.1662                                            
+           Clinton Rally |                                                       0.0885  
+                         |                                                       0.1446  
+-------------------------+---------------------------------------------------------------
+                      ll |          -1.48e+03            -5.58e+03            -1.48e+03  
+                       N |               3000                 9648                 3000  
+-----------------------------------------------------------------------------------------
+                                                                             legend: b/se
+
+
+-----------------------------------------------
+                Variable | did_hatecrimes_c~n  
+-------------------------+---------------------
+             Trump Rally |                     
+                         |                     
+           Clinton Rally |                     
+                         |                     
+-------------------------+---------------------
+                      ll |          -5.58e+03  
+                       N |               9648  
+-----------------------------------------------
+                                   legend: b/se
 
 . 
 . esttab did_* using "Tables/Rally_Effects_DiD.tex", cells(b(star fmt(%9.4f)) se(par fmt(%9.4f))) ///
-> noomitted nobaselevels keep(trumprallyoccured clintonrallyoccured) indicate("Month FE = *.month") stats(ll N, fmt(%9.2f %9.0g) labels("Log Lik
-> elihood" "Observations")) legend label ///
-> style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Difference in Differences Estimates") replace
+> noomitted nobaselevels keep(trumprallyoccured clintonrallyoccured) indicate("Month FE = *.month") stats
+> (ll N, fmt(%9.2f %9.0g) labels("Log Likelihood" "Observations")) legend label ///
+> style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Difference in 
+> Differences Estimates") replace
 (output written to Tables/Rally_Effects_DiD.tex)
 
 . 
@@ -1523,7 +1876,6 @@ file full_data.csv saved
 . estimates clear
 
 . 
-. 
 . *******************************************************************************
 . * (6) End of file
 . *******************************************************************************
@@ -1532,5 +1884,5 @@ file full_data.csv saved
       name:  <unnamed>
        log:  C:\Users\mlilley\Dropbox\Trump Rallies\Log Files/Trump_rallies_analysis.log
   log type:  text
- closed on:  10 Sep 2019, 00:48:10
-------------------------------------------------------------------------------------------------------------------------------------------------
+ closed on:  12 Sep 2019, 13:30:47
+---------------------------------------------------------------------------------------------------------

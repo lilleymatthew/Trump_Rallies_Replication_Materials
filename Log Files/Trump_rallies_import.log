@@ -1,8 +1,8 @@
-------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  C:\Users\mlilley\Dropbox\Trump Rallies\Log Files/Trump_rallies_import.log
   log type:  text
- opened on:  10 Sep 2019, 00:27:24
+ opened on:  12 Sep 2019, 12:22:54
 
 . set more off
 
@@ -218,7 +218,7 @@ totalvote: contains nonnumeric characters; replaced as long
 
 . 
 . save "`Returns_Minus_Alaska'"
-file C:\Users\mlilley\AppData\Local\Temp\ST_3cd8_000002.tmp saved
+file C:\Users\mlilley\AppData\Local\Temp\ST_5dbc_000001.tmp saved
 
 . 
 . 
@@ -309,6 +309,16 @@ file Intermediate/census_regions.dta saved
 
 . 
 . 
+. ** Taco Bell Locations
+. use "Cleaned/Taco_Bell_Locations", clear
+
+. 
+. save Intermediate/taco_bell_locations, replace
+(note: file Intermediate/taco_bell_locations.dta not found)
+file Intermediate/taco_bell_locations.dta saved
+
+. 
+. 
 . *******************************************************************************
 . * (2) End of file
 . *******************************************************************************
@@ -317,5 +327,5 @@ file Intermediate/census_regions.dta saved
       name:  <unnamed>
        log:  C:\Users\mlilley\Dropbox\Trump Rallies\Log Files/Trump_rallies_import.log
   log type:  text
- closed on:  10 Sep 2019, 00:27:26
-------------------------------------------------------------------------------------------------------------------------------------------------
+ closed on:  12 Sep 2019, 12:22:57
+---------------------------------------------------------------------------------------------------------

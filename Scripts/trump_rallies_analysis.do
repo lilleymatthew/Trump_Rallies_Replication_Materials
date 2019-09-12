@@ -127,6 +127,12 @@ bysort fips (monthyear): gen clintonrallyoccured = sum(clintonrallycount) > 0
 
 label variable clintonrallyoccured "Clinton Rally"
 
+* Taco Bell Locations
+merge m:1 fips using Intermediate/Taco_Bell_Locations, keep(master match) keepusing(taco_bell_locations) nogenerate
+replace taco_bell_locations = 0 if taco_bell_locations == .
+
+label variable taco_bell_locations "Restaurants"
+
 *******************************************************************************
 * (2) Regression Analysis
 *******************************************************************************
@@ -224,7 +230,39 @@ style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none
 estimates clear
 
 *******************************************************************************
-* (5) Regression Analysis - Difference in Differences
+* (5) Regression Analysis - Taco Bell Effects, Population Specification
+*******************************************************************************
+
+* Scale Population Level
+gen censuspop10_k = censuspop10 / 1000
+
+label variable censuspop10_k "Population ('000)"
+
+* Negative Binomial Regression, No Population Control
+nbreg taco_bell_locations trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
+estimates store nb_baseline_trump
+
+* Negative Binomial Regression, Population Level Control
+nbreg taco_bell_locations trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate censuspop10_k ib(11).month ib(4).region, dispersion(mean) vce(cluster fips) difficult
+estimates store nb_pop_level_trump
+
+* Negative Binomial Regression, Population Log Control
+nbreg taco_bell_locations trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate log_pop ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
+estimates store nb_pop_log_trump
+
+est table nb_*, stats(r2_p ll N) b(%9.4f) se(%9.4f) varlabel keep(trumprallyoccured) modelwidth(18)
+
+esttab nb_* using "Tables/Rally_Effects_Taco_Bell.tex", cells(b(star fmt(%9.4f)) se(par fmt(%9.4f))) ///
+noomitted nobaselevels keep(trumprallyoccured censuspop10_k log_pop) stats(r2_p ll N, fmt(%9.4f %9.2f %9.0g) labels("Pseudo R-squared" "Log Likelihood" "Observations")) legend label ///
+style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none) title("Falsification Test - Rally Effects on Taco Bell Locations") replace
+
+estimates clear
+
+// The specification using the level of population uses a different convergence 
+// setting - standard method often gets stuck for this regression.
+
+*******************************************************************************
+* (6) Regression Analysis - Difference in Differences
 *******************************************************************************
 
 xtset fips
@@ -251,7 +289,6 @@ style(tex) starlevels(* 0.10 ** 0.05 *** 0.01) mlabels(, depvars) collabels(none
 export delimited full_data.csv, replace
 
 estimates clear
-
 
 *******************************************************************************
 * (6) End of file

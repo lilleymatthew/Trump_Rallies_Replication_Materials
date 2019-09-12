@@ -201,6 +201,12 @@ label values region censusregions_lbl
 save Intermediate/census_regions.dta, replace
 
 
+** Taco Bell Locations
+use "Cleaned/Taco_Bell_Locations", clear
+
+save Intermediate/taco_bell_locations, replace
+
+
 *******************************************************************************
 * (2) End of file
 *******************************************************************************
