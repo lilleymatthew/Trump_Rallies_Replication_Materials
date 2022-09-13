@@ -1,8 +1,9 @@
----------------------------------------------------------------------------------------------------------
+--------------------------------------------------------
       name:  <unnamed>
-       log:  C:\Users\mlilley\Dropbox\Trump Rallies\Log Files/Trump_rallies_import.log
+       log:  C:\Users\mlilley\Dropbox\Trump Rallies\Log 
+> Files/Trump_rallies_import.log
   log type:  text
- opened on:  12 Sep 2019, 12:22:54
+ opened on:  12 Sep 2022, 17:08:43
 
 . set more off
 
@@ -11,13 +12,16 @@
 . macro drop _all
 
 . 
-. *******************************************************************************
+. ******************************************************
+> *************************
 . * (1) Load data and Import
-. *******************************************************************************
+. ******************************************************
+> *************************
 . 
 . ** Trump Rallies
 . 
-. import delimited "Cleaned/rally_counties_merged.csv", delimiter(",") clear 
+. import delimited "Cleaned/rally_counties_merged.csv", 
+> delimiter(",") clear 
 (8 vars, 397 obs)
 
 . 
@@ -38,7 +42,8 @@
 . 
 . gen count = 1
 
-. collapse (count) rallycount = count, by(fips monthyear state state_fips countyname countyfips)
+. collapse (count) rallycount = count, by(fips monthyear
+>  state state_fips countyname countyfips)
 
 . 
 . save Intermediate/Trump_rallies.dta, replace
@@ -48,7 +53,8 @@ file Intermediate/Trump_rallies.dta saved
 . 
 . ** Clinton Rallies
 . 
-. import delimited "Cleaned/clinton_rally_counties_merged.csv", delimiter(",") clear 
+. import delimited "Cleaned/clinton_rally_counties_merge
+> d.csv", delimiter(",") clear 
 (7 vars, 127 obs)
 
 . 
@@ -73,7 +79,8 @@ file Intermediate/Trump_rallies.dta saved
 . 
 . gen count = 1
 
-. collapse (count) rallycount = count, by(fips monthyear state state_fips countyname countyfips)
+. collapse (count) rallycount = count, by(fips monthyear
+>  state state_fips countyname countyfips)
 
 . 
 . save Intermediate/Clinton_rallies.dta, replace
@@ -82,7 +89,8 @@ file Intermediate/Clinton_rallies.dta saved
 . 
 . 
 . ** ADL Hate Incidents
-. import delimited "Cleaned/ADL_data_counties.csv", delimiter(",") clear 
+. import delimited "Cleaned/ADL_data_counties.csv", deli
+> miter(",") clear 
 (12 vars, 1,321 obs)
 
 . 
@@ -94,7 +102,8 @@ file Intermediate/Clinton_rallies.dta saved
 
 . 
 . * Fill State FIPS Data
-. bysort state_abbrev (state_fips): replace state_fips = state_fips[_n-1] if missing(state_fips)
+. bysort state_abbrev (state_fips): replace state_fips =
+>  state_fips[_n-1] if missing(state_fips)
 (302 real changes made)
 
 . 
@@ -105,7 +114,8 @@ file Intermediate/Clinton_rallies.dta saved
 . * Collapse to Month-County Level
 . gen count = 1
 
-. collapse (count) incidentcount = count, by(fips monthyear state state_fips countyname countyfips)
+. collapse (count) incidentcount = count, by(fips monthy
+> ear state state_fips countyname countyfips)
 
 . 
 . save Intermediate/hate_incidents.dta, replace
@@ -114,7 +124,8 @@ file Intermediate/hate_incidents.dta saved
 . 
 . 
 . ** SPLC Hate Groups
-. import delimited "Cleaned/splc-hate-groups-2016.csv", delimiter(",") clear 
+. import delimited "Cleaned/splc-hate-groups-2016.csv", 
+> delimiter(",") clear 
 (8 vars, 917 obs)
 
 . 
@@ -129,7 +140,8 @@ file Intermediate/hate_groups.dta saved
 . 
 . 
 . ** Jewish Population (and Total Population)
-. import delimited "Cleaned/N-JewishMapUS_2011_MapData.csv", delimiter(",") clear 
+. import delimited "Cleaned/N-JewishMapUS_2011_MapData.c
+> sv", delimiter(",") clear 
 (22 vars, 3,221 obs)
 
 . 
@@ -142,7 +154,8 @@ file Intermediate/hate_groups.dta saved
 
 . 
 . * Reset Placeholder Codes to Zero Population
-. *replace bermanest = 0 if bermanest == 49 | bermanest == 101
+. *replace bermanest = 0 if bermanest == 49 | bermanest 
+> == 101
 . 
 . * Per Capita Jewish Population
 . gen jewishpopshare = bermanest / censuspop10
@@ -159,7 +172,8 @@ file Intermediate/jewish_population.dta saved
 . 
 . 
 . ** College Education
-. import delimited "Cleaned/nhgis0001_ds215_20155_2015_county.csv", delimiter(",") clear 
+. import delimited "Cleaned/nhgis0001_ds215_20155_2015_c
+> ounty.csv", delimiter(",") clear 
 (88 vars, 3,220 obs)
 
 . 
@@ -171,8 +185,10 @@ file Intermediate/jewish_population.dta saved
 (78 observations deleted)
 
 . 
-. * Per Capita College Attainment (Bachelor's Degree or Higher)
-. gen collegeshare = (admze022 + admze023 + admze024 + admze025) / admze001
+. * Per Capita College Attainment (Bachelor's Degree or 
+> Higher)
+. gen collegeshare = (admze022 + admze023 + admze024 + a
+> dmze025) / admze001
 
 . 
 . keep state statea county countya fips collegeshare
@@ -187,18 +203,24 @@ file Intermediate/college_educated.dta saved
 . 
 . 
 . ** 2012 Presidential Election (Most states)
-. import delimited "Cleaned/County_Presidential_Election_Data_2012_0_0_2.csv", delimiter(",") clear  
+. import delimited "Cleaned/County_Presidential_Election
+> _Data_2012_0_0_2.csv", delimiter(",") clear  
 (36 vars, 3,114 obs)
 
 . 
-. destring state_fips countyfips willardmittromney totalvote, force replace
-state_fips: contains nonnumeric characters; replaced as byte
+. destring state_fips countyfips willardmittromney total
+> vote, force replace
+state_fips: contains nonnumeric characters; replaced as 
+> byte
 (1 missing value generated)
-countyfips: contains nonnumeric characters; replaced as int
+countyfips: contains nonnumeric characters; replaced as 
+> int
 (1 missing value generated)
-willardmittromney: contains nonnumeric characters; replaced as long
+willardmittromney: contains nonnumeric characters; repla
+> ced as long
 (1 missing value generated)
-totalvote: contains nonnumeric characters; replaced as long
+totalvote: contains nonnumeric characters; replaced as l
+> ong
 (1 missing value generated)
 
 . 
@@ -218,12 +240,15 @@ totalvote: contains nonnumeric characters; replaced as long
 
 . 
 . save "`Returns_Minus_Alaska'"
-file C:\Users\mlilley\AppData\Local\Temp\ST_5dbc_000001.tmp saved
+file
+    C:\Users\mlilley\AppData\Local\Temp\ST_864_000001.
+    > tmp saved as .dta format
 
 . 
 . 
 . ** 2012 Presidential Election (Alaska)
-. import delimited "Cleaned/Alaska_Borough_Returns_2012.csv", delimiter(",") clear
+. import delimited "Cleaned/Alaska_Borough_Returns_2012.
+> csv", delimiter(",") clear
 (6 vars, 29 obs)
 
 . 
@@ -269,7 +294,8 @@ file Intermediate/crime_data.dta saved
 . 
 . 
 . ** 2015 UCR Hate Crime Data
-. use "Cleaned/UCR_2016_County_Hate_Crimes_Monthly", clear
+. use "Cleaned/UCR_2016_County_Hate_Crimes_Monthly", cle
+> ar
 
 . 
 . keep fips state_fips countyfips hate_crimes month
@@ -288,7 +314,8 @@ file Intermediate/hate_crimes.dta saved
 . 
 . 
 . ** Census Regions
-. import delimited "Cleaned/state-geocodes-v2017.csv", delimiter(",") varnames(6) clear
+. import delimited "Cleaned/state-geocodes-v2017.csv", d
+> elimiter(",") varnames(6) clear
 (4 vars, 64 obs)
 
 . 
@@ -299,7 +326,8 @@ file Intermediate/hate_crimes.dta saved
 . rename statefips state_fips
 
 . 
-. label define censusregions_lbl 1 "Northeast" 2 "Midwest"  3 "South" 4 "West", add
+. label define censusregions_lbl 1 "Northeast" 2 "Midwes
+> t"  3 "South" 4 "West", add
 
 . label values region censusregions_lbl
 
@@ -314,18 +342,50 @@ file Intermediate/census_regions.dta saved
 
 . 
 . save Intermediate/taco_bell_locations, replace
-(note: file Intermediate/taco_bell_locations.dta not found)
 file Intermediate/taco_bell_locations.dta saved
 
 . 
 . 
-. *******************************************************************************
+. ** Urban Population Share
+. import delimited "Cleaned/nhgis0036_ds172_2010_county.
+> csv", delimiter(",") clear 
+(45 vars, 3,221 obs)
+
+. 
+. gen fips = statea * 1000 + countya
+
+. 
+. * Remove Puerto Rico
+. drop if statea == 72
+(78 observations deleted)
+
+. 
+. * Urban Population Share 
+. gen urbanshare = h7w002 / h7w001 
+
+. 
+. keep state statea county countya fips urbanshare
+
+. 
+. rename (countya statea) (countyfips state_fips)
+
+. 
+. save Intermediate/urban_share.dta, replace
+(file Intermediate/urban_share.dta not found)
+file Intermediate/urban_share.dta saved
+
+. 
+. 
+. ******************************************************
+> *************************
 . * (2) End of file
-. *******************************************************************************
+. ******************************************************
+> *************************
 . 
 . log close
       name:  <unnamed>
-       log:  C:\Users\mlilley\Dropbox\Trump Rallies\Log Files/Trump_rallies_import.log
+       log:  C:\Users\mlilley\Dropbox\Trump Rallies\Log 
+> Files/Trump_rallies_import.log
   log type:  text
- closed on:  12 Sep 2019, 12:22:57
----------------------------------------------------------------------------------------------------------
+ closed on:  12 Sep 2022, 17:08:46
+--------------------------------------------------------

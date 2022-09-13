@@ -207,6 +207,24 @@ use "Cleaned/Taco_Bell_Locations", clear
 save Intermediate/taco_bell_locations, replace
 
 
+** Urban Population Share
+import delimited "Cleaned/nhgis0036_ds172_2010_county.csv", delimiter(",") clear 
+
+gen fips = statea * 1000 + countya
+
+* Remove Puerto Rico
+drop if statea == 72
+
+* Urban Population Share 
+gen urbanshare = h7w002 / h7w001 
+
+keep state statea county countya fips urbanshare
+
+rename (countya statea) (countyfips state_fips)
+
+save Intermediate/urban_share.dta, replace
+
+
 *******************************************************************************
 * (2) End of file
 *******************************************************************************

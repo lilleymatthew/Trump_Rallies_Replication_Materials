@@ -117,14 +117,29 @@ label variable property_crime_rate "Property Crime"
 * Census Regions
 merge m:1 state_fips using Intermediate/census_regions.dta, keep(master match) keepusing(region division) nogenerate
 
-* Presence of Trump Rally - Time Structure
-bysort fips (monthyear): gen trumprallyoccured = sum(trumprallycount) > 0 
+* Share Urban
+merge m:1 fips using Intermediate/urban_share.dta, keep(master match) nogenerate
 
+** Rally Time Structure
+// Initially (as per WP) used occurence of rally YTD
+// Now use rally prior month (set Jan to 0, not missing, ignore Dec 2020 rallies - seems to be what they say they did)
+
+* Presence of Trump Rally - Time Structure
+bysort fips (monthyear): gen trumprallyyet = sum(trumprallycount) > 0 
+
+bysort fips (monthyear): gen trumprallyprevious = trumprallycount[_n-1] > 0 if !missing(trumprallycount[_n-1])
+replace trumprallyprevious = 0 if missing(trumprallyprevious)
+
+gen trumprallyoccured = trumprallyprevious
 label variable trumprallyoccured "Trump Rally"
 
 * Presence of Clinton Rally - Time Structure
-bysort fips (monthyear): gen clintonrallyoccured = sum(clintonrallycount) > 0 
+bysort fips (monthyear): gen clintonrallyyet = sum(clintonrallycount) > 0 
 
+bysort fips (monthyear): gen clintonrallyprevious = clintonrallycount[_n-1] > 0 if !missing(clintonrallycount[_n-1])
+replace clintonrallyprevious = 0 if missing(clintonrallyprevious)
+
+gen clintonrallyoccured = clintonrallyprevious
 label variable clintonrallyoccured "Clinton Rally"
 
 * Taco Bell Locations
@@ -146,7 +161,7 @@ predict incident_hat if e(sample) == 1, xb
 nbreg incidentcount clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
 estimates store nb_baseline_clinton
 
-* Control for County Population
+* Control for (Log) County Population
 gen log_pop = ln(censuspop10)
 label variable log_pop "Population (Log)"
 
@@ -156,7 +171,24 @@ estimates store nb_population_trump
 nbreg incidentcount clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate log_pop ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
 estimates store nb_population_clinton
 
-coefplot (nb_baseline_trump, color(red) ciopts(lcolor(red)) keep(trumprallyoccured) eform label("Trump Effect (Baseline)")) (nb_baseline_clinton, color(blue) ciopts(lcolor(blue)) keep(clintonrallyoccured) eform label("Clinton Effect (Baseline)")) (nb_population_trump, color(red) ciopts(lcolor(red)) keep(trumprallyoccured) eform label("Trump Effect (Pop. Control)")) (nb_population_clinton, color(blue) ciopts(lcolor(blue)) keep(clintonrallyoccured) eform label("Clinton Effect (Pop. Control)")), vertical omitted scheme(sj) xlabel(, nolabels notick) graphregion(color(white)) ytitle("Effect Size") title("Rally Effects in the Four Models") ylabel(1 "0%" 2 "100%" 3 "200%" 4 "300%" 5 "400%" 6 "500%" 7 "600%", angle(horizontal))
+* Control for Urban Population Share
+label variable urbanshare "\% Urban Population"
+
+nbreg incidentcount trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate urbanshare ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
+estimates store nb_urban_trump
+
+nbreg incidentcount clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate urbanshare ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
+estimates store nb_urban_clinton
+
+* Control for Population and Urban Population Share
+nbreg incidentcount trumprallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate urbanshare log_pop ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
+estimates store nb_both_trump
+
+nbreg incidentcount clintonrallyoccured collegeshare jewishpopshare gop2012share hategroupscount violent_crime_rate property_crime_rate urbanshare log_pop ib(11).month ib(4).region, dispersion(mean) vce(cluster fips)
+estimates store nb_both_clinton
+
+* Output
+coefplot (nb_baseline_trump, color(red) ciopts(lcolor(red)) msymbol(O) keep(trumprallyoccured) eform label("Trump Effect (Baseline)")) (nb_baseline_clinton, color(blue) ciopts(lcolor(blue)) msymbol(O) keep(clintonrallyoccured) eform label("Clinton Effect (Baseline)")) (nb_urban_trump, color(red) ciopts(lcolor(red)) msymbol(D) keep(trumprallyoccured) eform label("Trump Effect (\% Urban Control)")) (nb_urban_clinton, color(blue) ciopts(lcolor(blue)) msymbol(D) keep(clintonrallyoccured) eform label("Clinton Effect (\% Urban Control)")) (nb_population_trump, color(red) ciopts(lcolor(red)) msymbol(T) keep(trumprallyoccured) eform label("Trump Effect (Pop. Control)")) (nb_population_clinton, color(blue) ciopts(lcolor(blue)) msymbol(T) keep(clintonrallyoccured) eform label("Clinton Effect (Pop. Control)")) (nb_both_trump, color(red) ciopts(lcolor(red)) msymbol(S) keep(trumprallyoccured) eform label("Trump Effect (Urban, Pop. Controls)")) (nb_both_clinton, color(blue) ciopts(lcolor(blue)) msymbol(S) keep(clintonrallyoccured) eform label("Clinton Effect (Urban, Pop. Controls)")), vertical omitted scheme(sj) xlabel(, nolabels notick) graphregion(color(white)) ytitle("Effect Size") title("Rally Effects in the Six Models") ylabel(1 "0%" 2 "100%" 3 "200%" 4 "300%" 5 "400%" 6 "500%" 7 "600%", angle(horizontal))
 graph export "Figures/Rally_Effects.png", width(1024) height(768) replace
 
 est table nb_*, stats(r2_p ll N) b(%9.4f) se(%9.4f) varlabel keep(trumprallyoccured clintonrallyoccured) modelwidth(18)
@@ -203,14 +235,14 @@ estimates clear
 *******************************************************************************
 
 * Locations with Trump Rally, Pre-Rally
-bysort fips (monthyear): gen trumpeverrally = trumprallyoccured[_N]
-gen beforetrumprally = trumpeverrally - trumprallyoccured 
+bysort fips (monthyear): gen trumpeverrally = trumprallyyet[_N]
+gen beforetrumprally = trumpeverrally - trumprallyyet 
 
 label variable beforetrumprally "Future Trump Rally"
 
 * Locations with Clinton Rally, Pre-Rally
-bysort fips (monthyear): gen clintoneverrally = clintonrallyoccured[_N]
-gen beforeclintonrally = clintoneverrally - clintonrallyoccured 
+bysort fips (monthyear): gen clintoneverrally = clintonrallyyet[_N]
+gen beforeclintonrally = clintoneverrally - clintonrallyyet 
 
 label variable beforeclintonrally "Future Clinton Rally"
 
